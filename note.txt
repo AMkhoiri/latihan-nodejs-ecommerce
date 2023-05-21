@@ -1,0 +1,16 @@
+catatan selama proses development
+
+-- project ini menggunakan sequelize sebagai ORM
+
+-- jalankan "sequelize-cli init" untuk membuat direktori migrations, seeders, models. 
+-- serta juga menggenerate file index.js di dalam folder models, file ini nantinya akan berperan sebagai titik masuk (entry point) untuk mengimpor semua model yg ada
+-- serta juga menggenerate file config.json (disini direname jadi database.json). sesuakan koneksi database nya pakai yg development
+
+-- membuat file model sekaligus beserta dengan migration nya dengan perintah "npx sequelize-cli ......"
+-- file migration dan model yg dihasilkan masih menerapkan commonJs module, 
+-- jadi untuk file model nya saya ubah menjadi Es module, 
+-- namun untuk file migration nya tetap dibiarkan menggunakan commonJS. karena secara default sequelize-cli masih menerapkan commonJS
+-- sehingga ketika akan run migrasi nya nanti sementara package.json >> type diubah jadi "commonjs". jangan lupa dibalikkan ketika selesai migrasi.
+
+-- aplikasi ini menerapkan 2 validator, express-validator dan validator bawaan sequelize yg di set di model
+
