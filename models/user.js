@@ -2,6 +2,9 @@
 
 import {Model} from "sequelize"
 import moment from 'moment'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export default (sequelize, DataTypes) => {
   class User extends Model {
@@ -13,6 +16,25 @@ export default (sequelize, DataTypes) => {
     static associate(models) {
       User.belongsTo(models.Role, { foreignKey: 'roleId' });
     }
+
+    /* Function for extract User data from token payload */
+    static getUserFromToken(req) {
+      const authorizationHeader = req.headers.authorization;
+      if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+        const token = authorizationHeader.substring(7);
+        try {
+          const userData = jwt.verify(token, process.env.JWT_SECRET_KEY)
+          return userData
+        } 
+        catch (error) {
+          return null
+        }
+      }
+      else {
+        return null
+      }
+    }
+
   }
 
   User.init({

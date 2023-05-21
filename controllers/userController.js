@@ -7,12 +7,12 @@ import BaseController from './baseController.js'
 
 class UserController extends BaseController {
 	
-	async getAllUsers(req, res) 
-	{
+	async getAllUsers(req, res) {
 		try {
 			let users = await User.findAll({
 			  include: [Role]
 			})
+
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
 		} 
 		catch(error) {
@@ -20,8 +20,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async getUserById(req, res) 
-	{
+	async getUserById(req, res) {
 		try {
 			const id = req.params.id;
 
@@ -35,8 +34,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async createUser(req, res) 
-	{
+	async createUser(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -52,6 +50,7 @@ class UserController extends BaseController {
 				}, {
 					fields: ['name', 'username', 'password', 'roleId']
 				})
+
 				super.sendResponse(res, 200, "Data User berhasil disimpan", null)
 			}
 			catch (error) {
@@ -65,8 +64,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async updateUser(req, res)
-	{
+	async updateUser(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -99,8 +97,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async changeStatusUser(req, res)
-	{
+	async changeStatusUser(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -127,7 +124,6 @@ class UserController extends BaseController {
 				    super.sendErrorValidationResponse(res, error.errors);
 			    }
 			    else {
-			    	console.log(error)
 			      super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
 			    }
 			}

@@ -7,6 +7,17 @@ import UserController from '../controllers/userController.js'
 
 
 /* Validator */
+
+const getUserValidator = [
+	param('id')
+		.notEmpty().withMessage('Parameter ID User wajib diisi')
+		.custom(async (value) => {
+			const userToChange = await User.findByPk(value)
+			if (!userToChange) throw new Error('Data User tidak ditemukan')
+			return true
+		})
+]
+
 const createUserValidator = [
 	body('name')
 		.notEmpty().withMessage('Nama wajib diisi'),
@@ -77,10 +88,10 @@ const changeStatusUserValidator = [
 const userRouter = express.Router()
 const userController = new UserController();
 
-userRouter.get('/users', userController.getAllUsers)
-userRouter.get('/users/:id', userController.getUserById)
-userRouter.post('/users', createUserValidator, userController.createUser)
-userRouter.put('/users/:id', updateUserValidator, userController.updateUser)
-userRouter.put('/users/:id/change-status', changeStatusUserValidator, userController.changeStatusUser)
+userRouter.get('/', userController.getAllUsers)
+userRouter.get('/:id', getUserValidator, userController.getUserById)
+userRouter.post('/', createUserValidator, userController.createUser)
+userRouter.put('/:id', updateUserValidator, userController.updateUser)
+userRouter.put('/:id/change-status', changeStatusUserValidator, userController.changeStatusUser)
 
-export default userRouter
+export default userRouter 

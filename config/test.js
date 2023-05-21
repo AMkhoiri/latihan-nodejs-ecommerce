@@ -23,20 +23,38 @@
 
 
 
-import { Role, User} from '../models/index.js'; 
 
-const testModel = async () => {
+// import { Role, User} from '../models/index.js'; 
+
+// const testModel = async () => {
+// 	try{
+// 		// const roles = await Role.findAll();
+// 		const roles = await Role.findAll({
+// 		  include: [User]
+// 		});
+
+// 		console.log(roles[0].Users[0].name)
+// 	}
+// 	catch(err) {
+// 		console.log(err)
+// 	}
+// }
+
+// testModel()
+
+
+
+
+import dotenv from 'dotenv'
+dotenv.config()
+
+const testEnv = async () => {
 	try{
-		// const roles = await Role.findAll();
-		const roles = await Role.findAll({
-		  include: [User]
-		});
-
-		console.log(roles[0].Users[0].name)
+		console.log(process.env.NODE_ENV)
 	}
 	catch(err) {
 		console.log(err)
 	}
 }
 
-testModel()
+testEnv()
