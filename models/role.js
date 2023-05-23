@@ -5,6 +5,11 @@ import moment from "moment"
 
 export default (sequelize, DataTypes) => {
   class Role extends Model {
+
+    /* static prperty for ID Role*/
+    static ADMIN = 1
+    static CUSTOMER = 2
+
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.

@@ -22,7 +22,7 @@ class AuthController extends BaseController {
 					name: req.body.name,
 					username: req.body.username,
 					password: await bcrypt.hash(req.body.password, 10),
-					roleId: 2,
+					roleId: Role.CUSTOMER,
 				}, {
 					fields: ['name', 'username', 'password', 'roleId']
 				})

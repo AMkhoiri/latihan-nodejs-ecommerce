@@ -9,6 +9,7 @@ import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
 
 const app = express()
 
+/* set middleware for parsing HTTP content */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(multer().any('file'))
@@ -17,7 +18,7 @@ app.use(multer().any('file'))
 /* auth routes */
 app.use('/auth', authRouter)
 
-/* middleware for main routes*/
+/* set middleware for all main routes */
 app.use(checkAuthMiddleware)
 
 /* main routes */
@@ -28,7 +29,11 @@ app.use('/users', checkRoleMiddleware(1), userRouter)
 
 
 app.use("/", (req, res) => {
-    res.send("Route tidak ditemukan")
+    res.status(404).json({
+    	code: 404,
+      	success: false,
+      	message: "Route tidak ditemukan"
+    });
 })
 
 app.listen(3000, () => {

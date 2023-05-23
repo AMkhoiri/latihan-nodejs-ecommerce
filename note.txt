@@ -14,3 +14,5 @@ catatan selama proses development
 
 -- aplikasi ini menerapkan 2 validator, express-validator dan validator bawaan sequelize yg di set di model
 
+-- untuk ambil data user dari controller, bisa dari "req.userData" atau "User.getUserFromToken(req)"
+
