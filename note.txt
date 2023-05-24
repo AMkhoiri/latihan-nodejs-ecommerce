@@ -14,5 +14,7 @@ catatan selama proses development
 
 -- aplikasi ini menerapkan 2 validator, express-validator dan validator bawaan sequelize yg di set di model
 
--- untuk ambil data user dari controller, bisa dari "req.userData" atau "User.getUserFromToken(req)"
+-- untuk ambil data user aktif (sedang login) dari controller, bisa dari "req.userData" atau "User.getUserFromToken(req)"
 
+-- di sequelize, query where hanya bisa dilakukan sekali, beda dengan di Eloquent laravel yang bisa di "chaining" semisal "->where()->where()". kalau di sequelize harus "Where:{object}", tidak bisa "Where:{condition},Where:{condition}"
+-- jadi jika ada beberapa kondisi where yg diperlukan maka harus dibungkus menjadi suatu object dahulu.

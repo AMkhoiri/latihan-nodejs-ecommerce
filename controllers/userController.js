@@ -16,7 +16,7 @@ class UserController extends BaseController {
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
 		} 
 		catch(error) {
-			super.sendErrorResponse(res, 500, e);
+			super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
 		}
 	}
 
@@ -30,7 +30,7 @@ class UserController extends BaseController {
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
 		}
 		catch(error) {
-			super.sendErrorResponse(res, 500, e);
+			super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
 		}
 	}
 
@@ -58,7 +58,7 @@ class UserController extends BaseController {
 				    super.sendErrorValidationResponse(res, error.errors);
 			    }
 			    else {
-			      super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			      	super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
 			    }
 			}
 		}

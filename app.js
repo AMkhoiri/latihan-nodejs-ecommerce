@@ -2,6 +2,7 @@ import express from 'express'
 import multer from 'multer'
 
 import authRouter from './routes/authRoutes.js'
+import referenceRouter from './routes/referenceRoutes.js'
 import userRouter from './routes/userRoutes.js'
 
 import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
@@ -18,12 +19,14 @@ app.use(multer().any('file'))
 /* auth routes */
 app.use('/auth', authRouter)
 
-/* set middleware for all main routes */
+/* set middleware for all main & utility routes */
 app.use(checkAuthMiddleware)
 
 /* main routes */
-app.use('/users', checkRoleMiddleware(1), userRouter)
+app.use('/users', checkRoleMiddleware([1]), userRouter)
 
+/* utility routes */
+app.use('/references', checkRoleMiddleware([1,2]), referenceRouter)
 
 
 

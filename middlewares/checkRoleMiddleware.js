@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
 
-function checkRoleMiddleware(roleId) {
+function checkRoleMiddleware(roleIds) {
   return function(req, res, next) {
 
     const userRoleId = req.userData.roleId 	/* req.userData ini di set dari middleware "checkAuthMiddleware" */
 
-    if (userRoleId === roleId) {
+    if (roleIds.includes(userRoleId)) {
       next()
     } 
     else {
