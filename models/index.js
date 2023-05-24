@@ -58,7 +58,7 @@ const __dirname = dirname(__filename);
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 
-const configPath = path.resolve(__dirname, '..', 'config', 'database.json');
+const configPath = path.resolve(__dirname, '..', 'config', 'config.json');
 const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const config = configData[env];
 
@@ -72,16 +72,36 @@ if (config.use_env_variable) {
 /* Import definisi model (manual) */
 import RoleModel from './role.js';
 import UserModel from './user.js';
+import CategoryModel from './category.js';
+import BrandModel from './brand.js';
+import ProductModel from './product.js';
+import ProductImageModel from './productImage.js';
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes);
 const User = UserModel(sequelize, Sequelize.DataTypes);
+const Category = CategoryModel(sequelize, Sequelize.DataTypes);
+const Brand = BrandModel(sequelize, Sequelize.DataTypes);
+const Product = ProductModel(sequelize, Sequelize.DataTypes);
+const ProductImage = ProductImageModel(sequelize, Sequelize.DataTypes);
 
 /* Definisi relasi antar model */
 Role.associate({ User });
 User.associate({ Role });
+Category.associate({ Product });
+Brand.associate({ Product });
+Product.associate({ 
+	Category,
+	Brand,
+	ProductImage
+});
+ProductImage.associate({ Product });
 
 export {
-  Role,
-  User,
+  	Role,
+ 	User,
+ 	Category,
+	Brand,
+	Product,
+	ProductImage
 };
