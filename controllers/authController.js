@@ -68,9 +68,11 @@ class AuthController extends BaseController {
 					super.sendErrorResponse(res, 401, "Kata Sandi salah!");
 				}
 				else{
+					const userData = await User.findByPk(user.id)
+
 					const data = {
-						user: user,
-						token: AuthController.generateToken(user),
+						user: userData,
+						token: AuthController.generateToken(userData),
 					}
 
 					super.sendResponse(res, 200, "Login berhasil", data)
@@ -81,7 +83,6 @@ class AuthController extends BaseController {
 				    super.sendErrorValidationResponse(res, error.errors);
 			    }
 			    else {
-			    	console.log(error)
 			      	super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
 			    }
 			}
@@ -89,7 +90,12 @@ class AuthController extends BaseController {
 	}
 
 	static generateToken(user) {
-		const payload = { id: user.id, name: user.name, username: user.username, roleId: user.roleId }
+		const payload = { 
+			id: user.id,
+			name: user.name, 
+			username: user.username, 
+			roleId: user.roleId 
+		}
 
 		const data = {
 			token: jwt.sign(payload, process.env.JWT_SECRET_KEY, { 
@@ -101,7 +107,6 @@ class AuthController extends BaseController {
 
 		return data
 	}
-
 
 }
 

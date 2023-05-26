@@ -7,6 +7,9 @@ import userRouter from './routes/userRoutes.js'
 
 import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
 import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
+import sanitizerMiddleware from './middlewares/sanitizerMiddleware.js'
+
+import {Role} from './models/index.js'
 
 const app = express()
 
@@ -15,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(multer().any('file'))
 
+/* set middleware for all routes */
+app.use(sanitizerMiddleware)
 
 /* auth routes */
 app.use('/auth', authRouter)
@@ -23,10 +28,10 @@ app.use('/auth', authRouter)
 app.use(checkAuthMiddleware)
 
 /* main routes */
-app.use('/users', checkRoleMiddleware([1]), userRouter)
+app.use('/users', checkRoleMiddleware([Role.ADMIN]), userRouter)
 
 /* utility routes */
-app.use('/references', checkRoleMiddleware([1,2]), referenceRouter)
+app.use('/references', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), referenceRouter)
 
 
 
