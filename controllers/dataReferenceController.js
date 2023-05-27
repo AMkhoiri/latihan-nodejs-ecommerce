@@ -1,7 +1,7 @@
 import {Sequelize, Op} from 'sequelize'
 
 import {Role, User, Category, Brand, Product} from '../models/index.js'
-import BaseController from './baseController.js'
+import BaseController from './BaseController.js'
 
 class DataReferenceController extends BaseController {
 
@@ -29,7 +29,7 @@ class DataReferenceController extends BaseController {
 			super.sendResponse(res, 200, "Data Role berhasil ditampilkan", roles)
 		} 
 		catch(error) {
-			super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			super.handleServerError(req, res, error)
 		}
 	}
 
@@ -68,8 +68,7 @@ class DataReferenceController extends BaseController {
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
 		}
 		catch(error) {
-			console.log(error)
-			super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			super.handleServerError(req, res, error)
 		}
 	}
 }

@@ -9,7 +9,7 @@ function checkRoleMiddleware(roleIds) {
       next()
     } 
     else {
-      return res.status(403).json({ message: 'Anda tidak diizinkan mengakses rute ini' });
+       res.status(403).json({ message: 'Anda tidak diizinkan mengakses rute ini' });
     }
   }
 }

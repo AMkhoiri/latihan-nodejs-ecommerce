@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import {Role, User} from '../models/index.js'
-import BaseController from './baseController.js'
+import BaseController from './BaseController.js'
 
 class AuthController extends BaseController {
 
@@ -38,10 +38,10 @@ class AuthController extends BaseController {
 			}
 			catch(error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors);
+				    super.sendErrorValidationResponse(res, error.errors)
 			    }
 			    else {
-			      	super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			      	super.handleServerError(req, res, error)
 			    }
 			}
 		}
@@ -80,10 +80,10 @@ class AuthController extends BaseController {
 			}
 			catch(error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors);
+				    super.sendErrorValidationResponse(res, error.errors)
 			    }
 			    else {
-			      	super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			      	super.handleServerError(req, res, error)
 			    }
 			}
 		}

@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {Role, User} from '../models/index.js'
-import DataReferenceController from '../controllers/dataReferenceController.js'
+import DataReferenceController from '../controllers/DataReferenceController.js'
 
 
 /* Router */

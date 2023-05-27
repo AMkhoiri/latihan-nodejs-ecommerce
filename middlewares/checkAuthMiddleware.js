@@ -9,11 +9,11 @@ function checkAuthMiddleware(req, res, next) {
     		const token = authorizationHeader.substring(7);
 	        jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decodedPayload) => {
 			    if (error) {
-			        return res.status(401).json({ 
+			        res.status(401).json({ 
 			        	code: 401,
 	      				success: false,
 			        	message: 'Token tidak valid' 
-			        });
+			        })
 			    } else {
 			        req.userData = decodedPayload	/* push data ke request (untuk bisa digunakan kemudian) */
 
@@ -22,11 +22,11 @@ function checkAuthMiddleware(req, res, next) {
 		    });
     	}
     	else {
-    		return res.status(401).json({ 
+    		res.status(401).json({ 
 	        	code: 401,
 				success: false,
 	        	message: 'Token tidak valid' 
-	        });
+	        })
     	}
 	}
 	else {
@@ -34,7 +34,7 @@ function checkAuthMiddleware(req, res, next) {
         	code: 401,
 			success: false,
         	message: 'Unauthorized'
-        });
+        })
 	}
 }
 

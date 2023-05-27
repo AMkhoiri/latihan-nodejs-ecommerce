@@ -1,0 +1,16 @@
+{
+  "time": "2023-05-27 16:25",
+  "errorType": "ReferenceError",
+  "errorMessage": "Rolse is not defined",
+  "request": {
+    "route": "/users",
+    "method": "GET",
+    "contentType": "application/json",
+    "body": "{\"asdasd\":\"asdasd\"}"
+  },
+  "user": {
+    "id": 1,
+    "username": "admin"
+  }
+}
+

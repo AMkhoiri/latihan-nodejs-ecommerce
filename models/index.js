@@ -70,12 +70,12 @@ if (config.use_env_variable) {
 }
 
 /* Import definisi model (manual) */
-import RoleModel from './role.js';
-import UserModel from './user.js';
-import CategoryModel from './category.js';
-import BrandModel from './brand.js';
-import ProductModel from './product.js';
-import ProductImageModel from './productImage.js';
+import RoleModel from './Role.js';
+import UserModel from './User.js';
+import CategoryModel from './Category.js';
+import BrandModel from './Brand.js';
+import ProductModel from './Product.js';
+import ProductImageModel from './ProductImage.js';
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes);

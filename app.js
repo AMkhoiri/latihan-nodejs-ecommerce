@@ -9,6 +9,7 @@ import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
 import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
 import sanitizerMiddleware from './middlewares/sanitizerMiddleware.js'
 
+
 import {Role} from './models/index.js'
 
 const app = express()
@@ -43,6 +44,9 @@ app.use("/", (req, res) => {
       	message: "Route tidak ditemukan"
     });
 })
+
+
+
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');

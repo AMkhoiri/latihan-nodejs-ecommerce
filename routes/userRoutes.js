@@ -3,7 +3,7 @@ import {param, body} from 'express-validator'
 import {Op} from 'sequelize'
 
 import {Role, User} from '../models/index.js'
-import UserController from '../controllers/userController.js'
+import UserController from '../controllers/UserController.js'
 
 
 /* Validator */

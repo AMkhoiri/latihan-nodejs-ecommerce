@@ -3,20 +3,20 @@ import bcrypt from 'bcrypt'
 import {validationResult} from 'express-validator'
 
 import {Role, User} from '../models/index.js'
-import BaseController from './baseController.js'
+import BaseController from './BaseController.js'
 
 class UserController extends BaseController {
 	
 	async getAllUsers(req, res) {
 		try {
 			let users = await User.findAll({
-			  include: [Role]
+			  include: [Rolse]
 			})
 
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
 		} 
 		catch(error) {
-			super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			super.handleServerError(req, res, error)
 		}
 	}
 
@@ -30,7 +30,7 @@ class UserController extends BaseController {
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
 		}
 		catch(error) {
-			super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			super.handleServerError(req, res, error)
 		}
 	}
 
@@ -55,10 +55,10 @@ class UserController extends BaseController {
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors);
+				    super.sendErrorValidationResponse(res, error.errors)
 			    }
 			    else {
-			      	super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			      	super.handleServerError(req, res, error)
 			    }
 			}
 		}
@@ -88,10 +88,10 @@ class UserController extends BaseController {
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors);
+				    super.sendErrorValidationResponse(res, error.errors)
 			    }
 			    else {
-			      super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			      	super.handleServerError(req, res, error)
 			    }
 			}
 		}
@@ -121,10 +121,10 @@ class UserController extends BaseController {
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors);
+				    super.sendErrorValidationResponse(res, error.errors)
 			    }
 			    else {
-			      super.sendErrorResponse(res, 500, "Terjadi Kesalahan Koneksi");
+			      	super.handleServerError(req, res, error)
 			    }
 			}
 		}
