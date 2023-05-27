@@ -10,7 +10,7 @@ class UserController extends BaseController {
 	async getAllUsers(req, res) {
 		try {
 			let users = await User.findAll({
-			  include: [Rolse]
+			  include: [Role]
 			})
 
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)

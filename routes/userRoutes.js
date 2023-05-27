@@ -82,14 +82,17 @@ const changeStatusUserValidator = [
 ]
 
 
-
+const additionalMiddleware = (req, res, next) => {
+	console.log('asdasdasda')
+	next()
+}
 /* Router */
 
 const userRouter = express.Router()
 const userController = new UserController();
 
 userRouter.get('/', userController.getAllUsers)
-userRouter.get('/:id', getUserValidator, userController.getUserById)
+userRouter.get('/:id', additionalMiddleware, getUserValidator, userController.getUserById)  Ternyata bisa gini gan...
 userRouter.post('/', createUserValidator, userController.createUser)
 userRouter.put('/:id', updateUserValidator, userController.updateUser)
 userRouter.put('/:id/change-status', changeStatusUserValidator, userController.changeStatusUser)

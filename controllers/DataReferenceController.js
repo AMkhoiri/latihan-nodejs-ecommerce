@@ -10,6 +10,10 @@ class DataReferenceController extends BaseController {
 			const {search, page, perPage} = req.query
 
 			let whereCondition = {}
+			whereCondition['isActive'] = {
+	          	[Op.eq]: true
+	        }
+
 			if (search) {
 				whereCondition['username'] = {
 		          	[Op.like]: `%${search}%`
@@ -38,6 +42,10 @@ class DataReferenceController extends BaseController {
 			const {roleId, search, page, perPage} = req.query
 
 			let whereCondition = {}
+			whereCondition['isActive'] = {
+	          	[Op.eq]: true
+	        }
+
 			if (roleId) {
 				whereCondition['roleId'] = {
 		          	[Op.eq]: roleId

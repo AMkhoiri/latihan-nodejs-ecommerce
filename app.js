@@ -9,7 +9,6 @@ import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
 import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
 import sanitizerMiddleware from './middlewares/sanitizerMiddleware.js'
 
-
 import {Role} from './models/index.js'
 
 const app = express()
