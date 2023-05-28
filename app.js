@@ -1,15 +1,18 @@
 import express from 'express'
 import multer from 'multer'
 
+import {Role} from './models/index.js'
+
 import authRouter from './routes/authRoutes.js'
 import referenceRouter from './routes/referenceRoutes.js'
 import userRouter from './routes/userRoutes.js'
+import brandRouter from './routes/brandRoutes.js'
+import categoryRouter from './routes/categoryRoutes.js'
 
 import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
 import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
 import sanitizerMiddleware from './middlewares/sanitizerMiddleware.js'
 
-import {Role} from './models/index.js'
 
 const app = express()
 
@@ -29,6 +32,8 @@ app.use(checkAuthMiddleware)
 
 /* main routes */
 app.use('/users', checkRoleMiddleware([Role.ADMIN]), userRouter)
+app.use('/brands', checkRoleMiddleware([Role.ADMIN]), brandRouter)
+app.use('/categories', checkRoleMiddleware([Role.ADMIN]), categoryRouter)
 
 /* utility routes */
 app.use('/references', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), referenceRouter)

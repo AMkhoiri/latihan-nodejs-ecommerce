@@ -1,39 +1,35 @@
 import Sequelize from 'sequelize'
-import bcrypt from 'bcrypt'
 import {validationResult} from 'express-validator'
 
-import {Role, User} from '../models/index.js'
+import {Brand} from '../models/index.js'
 import BaseController from './BaseController.js'
 
-class UserController extends BaseController {
+class BrandController extends BaseController {
 	
-	async getAllUsers(req, res) {
+	async getAllBrands(req, res) {
 		try {
-			let users = await User.findAll({
-			  include: [Role]
-			})
+			let brands = await Brand.findAll()
 
-			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
+			super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brands)
 		} 
 		catch(error) {
 			super.handleServerError(req, res, error)
 		}
 	}
 
-	async getUserById(req, res) {
+	async getBrandById(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
 			super.sendErrorValidationResponse(res, errors.array())
 		}
-		else{
+		else {
 			try {
 				const id = req.params.id
 
-				let user = await User.findByPk(id, {
-				  include: [Role]
-				})
-				super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
+				let brand = await Brand.findByPk(id)
+
+				super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brand)
 			}
 			catch(error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -43,10 +39,10 @@ class UserController extends BaseController {
 			      	super.handleServerError(req, res, error)
 			    }
 			}
-		}		
+		}
 	}
 
-	async createUser(req, res) {
+	async createBrand(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -54,16 +50,13 @@ class UserController extends BaseController {
 		}
 		else{
 			try {
-				await User.create({
+				const brand = await Brand.create({
 					name: req.body.name,
-					username: req.body.username,
-					password: await bcrypt.hash(req.body.password, 10),
-					roleId: req.body.roleId,
 				}, {
-					fields: ['name', 'username', 'password', 'roleId']
+					fields: ['name']
 				})
 
-				super.sendResponse(res, 200, "Data User berhasil disimpan", null)
+				super.sendResponse(res, 200, "Data Brand berhasil disimpan", brand)
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -76,7 +69,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async updateUser(req, res) {
+	async updateBrand(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -86,17 +79,17 @@ class UserController extends BaseController {
 			try {
 				const id = req.params.id
 
-				await User.update({
-					name: req.body.name,
-					username: req.body.username,
-					roleId: req.body.roleId,
+				await Brand.update({
+					name: req.body.name
 				}, {
 					where: {
 						id: id
 					}
 				})
 
-				super.sendResponse(res, 200, "Data User berhasil diubah", null)
+				const updatedBrand = await Brand.findByPk(id)
+
+				super.sendResponse(res, 200, "Data Brand berhasil diubah", updatedBrand)
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -109,7 +102,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async changeStatusUser(req, res) {
+	async changeStatusBrand(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -118,10 +111,10 @@ class UserController extends BaseController {
 		else{
 			try {
 				const id = req.params.id
-				const user = await User.findByPk(id)
-				const newStatus = !user.isActive
+				const brand = await Brand.findByPk(id)
+				const newStatus = !brand.isActive
 
-				await User.update({
+				await Brand.update({
 					isActive: newStatus,
 				}, {
 					where: {
@@ -129,7 +122,9 @@ class UserController extends BaseController {
 					}
 				})
 
-				super.sendResponse(res, 200, "Status User berhasil diubah", null)
+				const updatedBrand = await Brand.findByPk(id)
+
+				super.sendResponse(res, 200, "Status Brand berhasil diubah", updatedBrand)
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -143,4 +138,4 @@ class UserController extends BaseController {
 	}
 }
 
-export default UserController
+export default BrandController

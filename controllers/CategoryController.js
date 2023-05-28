@@ -1,39 +1,35 @@
 import Sequelize from 'sequelize'
-import bcrypt from 'bcrypt'
 import {validationResult} from 'express-validator'
 
-import {Role, User} from '../models/index.js'
+import {Category} from '../models/index.js'
 import BaseController from './BaseController.js'
 
-class UserController extends BaseController {
+class CategoryController extends BaseController {
 	
-	async getAllUsers(req, res) {
+	async getAllCategories(req, res) {
 		try {
-			let users = await User.findAll({
-			  include: [Role]
-			})
+			let Categories = await Category.findAll()
 
-			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
+			super.sendResponse(res, 200, "Data Category berhasil ditampilkan", Categories)
 		} 
 		catch(error) {
 			super.handleServerError(req, res, error)
 		}
 	}
 
-	async getUserById(req, res) {
+	async getCategoryById(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
 			super.sendErrorValidationResponse(res, errors.array())
 		}
-		else{
+		else {
 			try {
 				const id = req.params.id
 
-				let user = await User.findByPk(id, {
-				  include: [Role]
-				})
-				super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
+				let category = await Category.findByPk(id)
+
+				super.sendResponse(res, 200, "Data Category berhasil ditampilkan", category)
 			}
 			catch(error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -43,10 +39,10 @@ class UserController extends BaseController {
 			      	super.handleServerError(req, res, error)
 			    }
 			}
-		}		
+		}
 	}
 
-	async createUser(req, res) {
+	async createCategory(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -54,16 +50,13 @@ class UserController extends BaseController {
 		}
 		else{
 			try {
-				await User.create({
+				const category = await Category.create({
 					name: req.body.name,
-					username: req.body.username,
-					password: await bcrypt.hash(req.body.password, 10),
-					roleId: req.body.roleId,
 				}, {
-					fields: ['name', 'username', 'password', 'roleId']
+					fields: ['name']
 				})
 
-				super.sendResponse(res, 200, "Data User berhasil disimpan", null)
+				super.sendResponse(res, 200, "Data Category berhasil disimpan", category)
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -76,7 +69,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async updateUser(req, res) {
+	async updateCategory(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -86,17 +79,17 @@ class UserController extends BaseController {
 			try {
 				const id = req.params.id
 
-				await User.update({
-					name: req.body.name,
-					username: req.body.username,
-					roleId: req.body.roleId,
+				await Category.update({
+					name: req.body.name
 				}, {
 					where: {
 						id: id
 					}
 				})
 
-				super.sendResponse(res, 200, "Data User berhasil diubah", null)
+				const updatedCategory = await Category.findByPk(id)
+
+				super.sendResponse(res, 200, "Data Category berhasil diubah", updatedCategory)
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -109,7 +102,7 @@ class UserController extends BaseController {
 		}
 	}
 
-	async changeStatusUser(req, res) {
+	async changeStatusCategory(req, res) {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
@@ -118,10 +111,10 @@ class UserController extends BaseController {
 		else{
 			try {
 				const id = req.params.id
-				const user = await User.findByPk(id)
-				const newStatus = !user.isActive
+				const category = await Category.findByPk(id)
+				const newStatus = !category.isActive
 
-				await User.update({
+				await Category.update({
 					isActive: newStatus,
 				}, {
 					where: {
@@ -129,7 +122,9 @@ class UserController extends BaseController {
 					}
 				})
 
-				super.sendResponse(res, 200, "Status User berhasil diubah", null)
+				const updatedCategory = await Category.findByPk(id)
+
+				super.sendResponse(res, 200, "Status Category berhasil diubah", updatedCategory)
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
@@ -143,4 +138,4 @@ class UserController extends BaseController {
 	}
 }
 
-export default UserController
+export default CategoryController

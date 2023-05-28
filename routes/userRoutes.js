@@ -12,8 +12,8 @@ const getUserValidator = [
 	param('id')
 		.notEmpty().withMessage('Parameter ID User wajib diisi')
 		.custom(async (value) => {
-			const userToChange = await User.findByPk(value)
-			if (!userToChange) throw new Error('Data User tidak ditemukan')
+			const user = await User.findByPk(value)
+			if (!user) throw new Error('Data User tidak ditemukan')
 			return true
 		})
 ]
@@ -92,7 +92,7 @@ const userRouter = express.Router()
 const userController = new UserController();
 
 userRouter.get('/', userController.getAllUsers)
-userRouter.get('/:id', additionalMiddleware, getUserValidator, userController.getUserById)  Ternyata bisa gini gan...
+userRouter.get('/:id', getUserValidator, userController.getUserById)
 userRouter.post('/', createUserValidator, userController.createUser)
 userRouter.put('/:id', updateUserValidator, userController.updateUser)
 userRouter.put('/:id/change-status', changeStatusUserValidator, userController.changeStatusUser)
