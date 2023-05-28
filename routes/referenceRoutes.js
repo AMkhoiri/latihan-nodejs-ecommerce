@@ -1,6 +1,5 @@
 import express from 'express'
 
-import {Role, User} from '../models/index.js'
 import DataReferenceController from '../controllers/DataReferenceController.js'
 
 
@@ -11,6 +10,8 @@ const dataReferenceController = new DataReferenceController;
 
 referenceRouter.get('/role', dataReferenceController.role)
 referenceRouter.get('/user', dataReferenceController.user)
+referenceRouter.get('/category', dataReferenceController.category)
+referenceRouter.get('/brand', dataReferenceController.brand)
 
 
 export default referenceRouter 

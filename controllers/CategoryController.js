@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize'
+import {Sequelize, Op} from 'sequelize'
 import {validationResult} from 'express-validator'
 
 import {Category} from '../models/index.js'
@@ -8,9 +8,26 @@ class CategoryController extends BaseController {
 	
 	async getAllCategories(req, res) {
 		try {
-			let Categories = await Category.findAll()
+			const {page, perPage, search} = req.query
 
-			super.sendResponse(res, 200, "Data Category berhasil ditampilkan", Categories)
+			let whereCondition = {}
+
+			if (search) {
+				whereCondition["name"] = {
+					[Op.iLike]: `%${search}%`
+				}
+			}
+
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			let categories = await Category.findAll({
+				where: whereCondition,
+				limit,
+				offset
+			})
+
+			super.sendResponse(res, 200, "Data Category berhasil ditampilkan", categories)
 		} 
 		catch(error) {
 			super.handleServerError(req, res, error)

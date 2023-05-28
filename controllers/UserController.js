@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize'
+import {Sequelize, Op} from 'sequelize'
 import bcrypt from 'bcrypt'
 import {validationResult} from 'express-validator'
 
@@ -9,8 +9,29 @@ class UserController extends BaseController {
 	
 	async getAllUsers(req, res) {
 		try {
+			const {roleId, search, page, perPage} = req.query
+
+			let whereCondition = {}
+
+			if (search) {
+				whereCondition[Op.or] = [
+				    {
+					    name: { [Op.iLike]: `%${search}%` }
+				    },
+				    {
+				      	username: { [Op.iLike]: `%${search}%` }
+				    }
+				]
+			}
+
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
 			let users = await User.findAll({
-			  include: [Role]
+			  	include: [Role],
+			  	where: whereCondition,
+  				limit,
+  				offset
 			})
 
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)

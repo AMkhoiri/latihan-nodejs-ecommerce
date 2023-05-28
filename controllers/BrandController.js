@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize'
+import {Sequelize, Op} from 'sequelize'
 import {validationResult} from 'express-validator'
 
 import {Brand} from '../models/index.js'
@@ -8,7 +8,24 @@ class BrandController extends BaseController {
 	
 	async getAllBrands(req, res) {
 		try {
-			let brands = await Brand.findAll()
+			const {page, perPage, search} = req.query
+
+			let whereCondition = {}
+
+			if (search) {
+				whereCondition['name'] = {
+		          	[Op.iLike]: `%${search}%`
+		        }
+			}
+
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			let brands = await Brand.findAll({
+				where: whereCondition,
+  				limit,
+  				offset
+			})
 
 			super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brands)
 		} 

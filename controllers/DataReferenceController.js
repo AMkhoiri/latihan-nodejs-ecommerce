@@ -7,7 +7,7 @@ class DataReferenceController extends BaseController {
 
 	async role(req, res) {
 		try {
-			const {search, page, perPage} = req.query
+			const {page, perPage, search} = req.query
 
 			let whereCondition = {}
 			whereCondition['isActive'] = {
@@ -15,8 +15,8 @@ class DataReferenceController extends BaseController {
 	        }
 
 			if (search) {
-				whereCondition['username'] = {
-		          	[Op.like]: `%${search}%`
+				whereCondition['name'] = {
+		          	[Op.iLike]: `%${search}%`
 		        }
 			}
 
@@ -39,7 +39,7 @@ class DataReferenceController extends BaseController {
 
 	async user(req, res) {
 		try {
-			const {roleId, search, page, perPage} = req.query
+			const {page, perPage, search, roleId} = req.query
 
 			let whereCondition = {}
 			whereCondition['isActive'] = {
@@ -55,10 +55,10 @@ class DataReferenceController extends BaseController {
 			if (search) {
 				whereCondition[Op.or] = [
 				    {
-					    name: { [Op.like]: `%${search}%` }
+					    name: { [Op.iLike]: `%${search}%` }
 				    },
 				    {
-				      	username: { [Op.like]: `%${search}%` }
+				      	username: { [Op.iLike]: `%${search}%` }
 				    }
 				]
 			}
@@ -75,6 +75,70 @@ class DataReferenceController extends BaseController {
 
 			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
 		}
+		catch(error) {
+			super.handleServerError(req, res, error)
+		}
+	}
+
+	async category(req, res) {
+		try {
+			const {page, perPage, search} = req.query
+
+			let whereCondition = {}
+			whereCondition['isActive'] = {
+	          	[Op.eq]: true
+	        }
+
+			if (search) {
+				whereCondition['name'] = {
+		          	[Op.iLike]: `%${search}%`
+		        }
+			}
+
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			let categories = await Category.findAll({
+				attributes: ['id', 'name'],
+				where: whereCondition,
+  				limit,
+  				offset
+			})
+
+			super.sendResponse(res, 200, "Data Category berhasil ditampilkan", categories)
+		} 
+		catch(error) {
+			super.handleServerError(req, res, error)
+		}
+	}
+
+	async brand(req, res) {
+		try {
+			const {page, perPage, search} = req.query
+
+			let whereCondition = {}
+			whereCondition['isActive'] = {
+	          	[Op.eq]: true
+	        }
+
+			if (search) {
+				whereCondition['name'] = {
+		          	[Op.iLike]: `%${search}%`
+		        }
+			}
+
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			let brands = await Brand.findAll({
+				attributes: ['id', 'name'],
+				where: whereCondition,
+  				limit,
+  				offset
+			})
+
+			super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brands)
+		} 
 		catch(error) {
 			super.handleServerError(req, res, error)
 		}
