@@ -5,6 +5,14 @@ import moment from "moment"
 
 export default (sequelize, DataTypes) => {
   class Product extends Model {
+
+    /* static prperty for Enum Adjusment Type*/
+    static CREATE = "create"
+    static STOCK_INCREASE = "stock-increase"
+    static STOCK_DECREASE = "stock-decrease"
+    static PRICE_INCREASE = "price-increase"
+    static PRICE_DECREASE = "price-decrease"
+
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,6 +22,7 @@ export default (sequelize, DataTypes) => {
       Product.belongsTo(models.Category, { foreignKey: 'categoryId' });
       Product.belongsTo(models.Brand, { foreignKey: 'brandId' });
       Product.hasMany(models.ProductImage, { foreignKey: 'productId' });
+      Product.hasMany(models.ProductHistory, { foreignKey: 'productId' });
     }
   }
 

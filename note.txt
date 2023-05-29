@@ -1,6 +1,7 @@
-catatan selama proses development
+catatan  proses development
 
 -- project ini menggunakan sequelize sebagai ORM
+-- selain insatall sequelize, perlu juga install manual driver postgresql untuk sequelize
 
 -- jalankan "sequelize-cli init" untuk membuat direktori migrations, seeders, models. 
 -- serta juga menggenerate file index.js di dalam folder models, file ini nantinya akan berperan sebagai titik masuk (entry point) untuk mengimpor semua model yg ada
@@ -10,11 +11,13 @@ catatan selama proses development
 -- file migration dan model yg dihasilkan masih menerapkan commonJs module, 
 -- jadi untuk file model nya saya ubah menjadi Es module, 
 -- namun untuk file migration nya tetap dibiarkan menggunakan commonJS. karena secara default sequelize-cli masih menerapkan commonJS
--- sehingga ketika akan run migrasi nya nanti sementara package.json >> type diubah jadi "commonjs". jangan lupa dibalikkan ketika selesai migrasi.
+-- sehingga ketika akan run migrasi nya (db:migrate) nanti sementara package.json >> type diubah jadi "commonjs". jangan lupa dibalikkan ketika selesai menjalankan migrasi.
 
--- aplikasi ini menerapkan 2 validator, express-validator dan validator bawaan sequelize yg di set di model
+-- aplikasi ini menerapkan 2 validator, express-validator dan validator bawaan sequelize yg di set di model (sudah disediakan sebuah helper untuk generate response terkait kedua validasi tersebut)
 
 -- untuk ambil data user aktif (sedang login) dari controller, bisa dari "req.userData" atau "User.getUserFromToken(req)"
 
 -- di sequelize, query where hanya bisa dilakukan sekali, beda dengan di Eloquent laravel yang bisa di "chaining" semisal "->where()->where()". kalau di sequelize harus "Where:{object}", tidak bisa "Where:{condition},Where:{condition}"
--- jadi jika ada beberapa kondisi where yg diperlukan maka harus dibungkus menjadi suatu object dahulu.
+-- jadi jika memerlukan banyak kondisi where, maka harus dibungkus menjadi suatu object dahulu.
+
+-- pada beberapa function yg kompleks (yg mengandung banyak interaksi database yang berbeda2), kita menggunakan fitur Database Transaction yang disediakan oleh sequelize.

@@ -76,6 +76,7 @@ import CategoryModel from './Category.js';
 import BrandModel from './Brand.js';
 import ProductModel from './Product.js';
 import ProductImageModel from './ProductImage.js';
+import ProductHistoryModel from './ProductHistory.js';
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes);
@@ -84,6 +85,7 @@ const Category = CategoryModel(sequelize, Sequelize.DataTypes);
 const Brand = BrandModel(sequelize, Sequelize.DataTypes);
 const Product = ProductModel(sequelize, Sequelize.DataTypes);
 const ProductImage = ProductImageModel(sequelize, Sequelize.DataTypes);
+const ProductHistory = ProductHistoryModel(sequelize, Sequelize.DataTypes);
 
 /* Definisi relasi antar model */
 Role.associate({ User });
@@ -93,15 +95,22 @@ Brand.associate({ Product });
 Product.associate({ 
 	Category,
 	Brand,
-	ProductImage
+	ProductImage,
+	ProductHistory
 });
 ProductImage.associate({ Product });
+ProductHistory.associate({ 
+	Product,
+	User 
+});
 
 export {
+	sequelize,  /* digunakan untuk database transaction*/
   	Role,
  	User,
  	Category,
 	Brand,
 	Product,
-	ProductImage
+	ProductImage,
+	ProductHistory
 };
