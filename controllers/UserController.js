@@ -45,7 +45,7 @@ class UserController extends BaseController {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
-			super.sendErrorValidationResponse(res, errors.array())
+			super.handleValidationError(res, errors.array())
 		}
 		else{
 			try {
@@ -57,12 +57,7 @@ class UserController extends BaseController {
 				super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
 			}
 			catch(error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
+				super.handleServerError(req, res, error)
 			}
 		}		
 	}
@@ -71,7 +66,7 @@ class UserController extends BaseController {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
-			super.sendErrorValidationResponse(res, errors.array())
+			super.handleValidationError(res, errors.array())
 		}
 		else{
 			try {
@@ -88,7 +83,7 @@ class UserController extends BaseController {
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors)
+				    super.handleValidationError(res, error.errors)
 			    }
 			    else {
 			      	super.handleServerError(req, res, error)
@@ -101,7 +96,7 @@ class UserController extends BaseController {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
-			super.sendErrorValidationResponse(res, errors.array())
+			super.handleValidationError(res, errors.array())
 		}
 		else{
 			try {
@@ -121,7 +116,7 @@ class UserController extends BaseController {
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors)
+				    super.handleValidationError(res, error.errors)
 			    }
 			    else {
 			      	super.handleServerError(req, res, error)
@@ -134,7 +129,7 @@ class UserController extends BaseController {
 		const errors = validationResult(req)
 
 		if (!errors.isEmpty()) {
-			super.sendErrorValidationResponse(res, errors.array())
+			super.handleValidationError(res, errors.array())
 		}
 		else{
 			try {
@@ -154,7 +149,7 @@ class UserController extends BaseController {
 			}
 			catch (error) {
 				if (error instanceof Sequelize.ValidationError) {
-				    super.sendErrorValidationResponse(res, error.errors)
+				    super.handleValidationError(res, error.errors)
 			    }
 			    else {
 			      	super.handleServerError(req, res, error)

@@ -62,7 +62,7 @@ class BaseController {
   }
 
   /* untuk handle validasi model & validasi "espress-validator" */
-  sendErrorValidationResponse(res, errors) {
+  handleValidationError(res, errors) {
     const validationErrors = errors.map(err => ({
       parameter: err.path,
       location: err.location,
