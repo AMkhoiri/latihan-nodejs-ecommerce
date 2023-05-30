@@ -269,7 +269,6 @@ class ProductController extends BaseController {
 				let oldProduct = await Product.findByPk(req.params.id)
 
 				let product = await Product.findByPk(req.params.id)
-				product.description = req.body.description
 
 				let adjustmentType = null 
 				if (parseFloat(req.body.newPrice) > product.price) {
