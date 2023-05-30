@@ -6,7 +6,7 @@ import moment from "moment"
 export default (sequelize, DataTypes) => {
   class Product extends Model {
 
-    /* static prperty for Enum Adjusment Type*/
+    /* static prperty for Enum Adjusment Type (for histories)*/
     static CREATE = "create"
     static STOCK_INCREASE = "stock-increase"
     static STOCK_DECREASE = "stock-decrease"
@@ -44,6 +44,7 @@ export default (sequelize, DataTypes) => {
         msg: 'Stock cannot be empty',
       },
     }, 
+    frozenStock: DataTypes.INTEGER,
     price: {
       type: DataTypes.FLOAT,
       allowNull: {

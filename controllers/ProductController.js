@@ -128,7 +128,7 @@ class ProductController extends BaseController {
 					transaction
 				})
 
-				await ProductHistory.record(product, req.body.stock, req.body.price, Product.CREATE, req.userData.id, transaction)
+				await ProductHistory.record(null, product, Product.CREATE, "Produk baru", req.userData.id, transaction)
 
 				await transaction.commit()
 
@@ -224,8 +224,8 @@ class ProductController extends BaseController {
 			const transaction = await sequelize.transaction() 
 
 			try {
-				let oldProduct = await Product.findByPk(req.params.id)	/*untuk keperluan record history*/
-
+				let oldProduct = await Product.findByPk(req.params.id)
+				
 				let product = await Product.findByPk(req.params.id)
 
 				if (req.body.operationType == Product.STOCK_INCREASE) {
@@ -237,7 +237,7 @@ class ProductController extends BaseController {
 
 				await product.save({ transaction })
 
-				await ProductHistory.record(oldProduct, req.body.stock, oldProduct.price, req.body.operationType, req.userData.id, transaction)
+				await ProductHistory.record(oldProduct, product, req.body.operationType, req.body.description, req.userData.id, transaction)
 
 				await transaction.commit()
 
@@ -268,18 +268,22 @@ class ProductController extends BaseController {
 			try {
 				let oldProduct = await Product.findByPk(req.params.id)
 
-				await Product.update({
-					price: req.body.newPrice
-				}, {
-					where: {
-						id: req.params.id
-					},
-					transaction
-				})
+				let product = await Product.findByPk(req.params.id)
+				product.description = req.body.description
 
-				let updatedProduct = await Product.findByPk(req.params.id)
+				let adjustmentType = null 
+				if (parseFloat(req.body.newPrice) > product.price) {
+					adjustmentType = Product.PRICE_INCREASE
+				}
+				else if (parseFloat(req.body.newPrice) < product.price) {
+					adjustmentType = Product.PRICE_DECREASE
+				}
 
-				await ProductHistory.record(oldProduct, updatedProduct.stock, req.body.newPrice, req.body.operationType, req.userData.id, transaction)
+				product.price = req.body.newPrice
+
+				await product.save({ transaction })
+
+				await ProductHistory.record(oldProduct, product, adjustmentType, req.body.description, req.userData.id, transaction)
 
 				await transaction.commit()
 

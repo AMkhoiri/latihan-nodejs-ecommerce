@@ -95,17 +95,15 @@ const priceAdjustmentProductValidator = [
 			if (!productToUpdate) throw new Error('Data Product tidak ditemukan')
 			return true
 		}),
-	body('operationType')
-		.notEmpty().withMessage('Tipe Adjustment wajib diisi').bail()
-		.custom((value) => {
-			let allowedValues = [Product.PRICE_INCREASE, Product.PRICE_DECREASE]
-			if (!allowedValues.includes(value)) throw new Error('Tipe Adjustment salah')
-			return true
-		}),
 	body('newPrice')
 		.notEmpty().withMessage('Harga Product wajib diisi')
 		.isNumeric().withMessage('Harga harus berupa angka').bail()
-    	.isFloat({ min: 0 }).withMessage('Harga harus lebih besar dari 0')
+    	.isFloat({ min: 0 }).withMessage('Harga harus lebih besar dari 0').bail()
+    	.custom(async(value, { req }) => {
+    		const productToUpdate = await Product.findByPk(req.params.id)
+    		if (parseFloat(value) == parseFloat(productToUpdate.price)) throw new Error(`Harga harus berbeda dari yang sekarang: ${productToUpdate.price}`)
+    			return true
+    	})
 ]
 
 const changeStatusProductValidator = [

@@ -17,29 +17,21 @@ export default (sequelize, DataTypes) => {
       ProductHistory.belongsTo(models.User, { foreignKey: 'createdBy' });
     }
 
-    static async record(oldProductData, stock, newPrice, type, userId, transaction) {
-
-      let oldStock = oldProductData.stock
-      let newStock = stock
-      
-      if (type == Product.STOCK_INCREASE) {
-        newStock = oldStock += parseInt(stock)
-      }
-      else if(type == Product.STOCK_DECREASE) {
-        newStock = oldStock -= parseInt(stock)
-      }
+    static async record(oldProductData, newProductData, type, description, userId, transaction) {
       await ProductHistory.create({
-        productId: oldProductData.id,
+        productId: newProductData.id,
         historyType: type,
         oldStock: oldProductData ? oldProductData.stock : null,
-        newStock: newStock,
+        newStock: newProductData.stock,
         oldPrice: oldProductData ? oldProductData.price : null,
-        newPrice: newPrice,
+        newPrice: newProductData.price,
+        description: description,
         createdBy: userId,
       }, {
         transaction
       })
     }
+
   }
 
   const historyTypeEnumValues = [Product.CREATE, Product.STOCK_INCREASE, Product.STOCK_DECREASE, Product.PRICE_INCREASE, Product.PRICE_DECREASE]
@@ -63,6 +55,7 @@ export default (sequelize, DataTypes) => {
     newPrice: DataTypes.FLOAT,
     oldStock: DataTypes.INTEGER,
     newStock: DataTypes.INTEGER,
+    description: DataTypes.TEXT,
     createdBy: DataTypes.INTEGER,
     createdAt: {
       type: DataTypes.DATE,
