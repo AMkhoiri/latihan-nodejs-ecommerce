@@ -1,5 +1,7 @@
 import {Sequelize, Op} from 'sequelize'
 import {validationResult} from 'express-validator'
+import path from 'path'
+import fs from 'fs/promises'
 
 import {sequelize} from '../models/index.js' /*untuk db transaction*/
 import {User, Category, Brand, Product, ProductImage, ProductHistory} from '../models/index.js'
@@ -297,6 +299,71 @@ class ProductController extends BaseController {
 			    else {
 			      	super.handleServerError(req, res, error)
 			    }
+			}
+		}
+	}
+
+	async uploadProductFile(req, res) {
+		const errors = validationResult(req)
+
+		if (!errors.isEmpty()) {
+			super.handleValidationError(res, errors.array())
+		}
+		else{
+			try{
+
+				const uploadPath = `storage/productImages/${req.params.id}`
+
+			    try {
+			      	await fs.access(uploadPath);
+			    } catch (error) {
+			      	await fs.mkdir(uploadPath, { recursive: true });
+			    }
+
+				for (let file of req.files) {
+
+					let name = file.originalname
+					let ext = path.extname(name)
+					let filePath = path.join(uploadPath, `${Date.now()}${ext}`)
+					let size = file.size
+					let mimetype = file.mimetype
+
+					await fs.writeFile(filePath, file.buffer)
+
+					await ProductImage.create({
+						productId: req.params.id,
+						name,
+						path: filePath,
+						extension: ext,
+						size,
+						mimetype
+					})
+				}
+
+				super.sendResponse(res, 200, "Gambar product berhasil disimpan", null)
+			}
+			catch(error) {
+			    super.handleServerError(req, res, error)
+			}
+		}
+	}
+
+	async deleteProductFile(req, res) {
+		const errors = validationResult(req)
+
+		if (!errors.isEmpty()) {
+			super.handleValidationError(res, errors.array())
+		}
+		else{
+			try{
+				let productImage = await ProductImage.findByPk(req.params.fileId)
+				await fs.unlink(productImage.path)
+				await productImage.destroy()
+
+				super.sendResponse(res, 200, "Gambar product berhasil dihapus", null)
+			}
+			catch(error) {
+			    super.handleServerError(req, res, error)
 			}
 		}
 	}

@@ -3,22 +3,38 @@ import {param, body} from 'express-validator'
 
 import checkRoleMiddleware from '../middlewares/checkRoleMiddleware.js'
 
-import {Role, Category, Brand, Product} from '../models/index.js'
+import {Role, Category, Brand, Product, ProductImage} from '../models/index.js'
 import ProductController from '../controllers/ProductController.js'
 
+import {productFileValidator} from '../validators/fileValidator.js'
 
-/* Validator */
 
-const getProductValidator = [
+/*params validator*/
+
+const checkProductIdValidator = [
 	param('id')
-		.notEmpty().withMessage('Parameter ID Product wajib diisi')
-		.isInt().withMessage('Parameter ID harus berupa angka').bail()
+		.notEmpty().withMessage('Parameter ID Product wajib diisi').bail()
+		.isInt().withMessage('Parameter ID Product harus berupa angka').bail()
 		.custom(async(value) => {
 			const product = await Product.findByPk(value)
 			if (!product) throw new Error('Data Product tidak ditemukan')
 			return true
 		})
 ]
+
+const checkProductImageIdValidator = [
+	param('fileId')
+		.notEmpty().withMessage('Parameter ID File wajib diisi').bail()
+		.isInt().withMessage('Parameter ID FIle harus berupa angka').bail()
+		.custom(async(value) => {
+			const productImage = await ProductImage.findByPk(value)
+			if (!productImage) throw new Error('Data File tidak ditemukan')
+			return true
+		})
+]
+
+
+/*body validator*/
 
 const createProductValidator = [
 	body('categoryId')
@@ -51,14 +67,6 @@ const createProductValidator = [
 ]
 
 const updateProductValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Product wajib diisi')
-		.isInt().withMessage('Brand harus berupa angka').bail()
-		.custom(async(value) => {
-			const productToUpdate = await Product.findByPk(value)
-			if (!productToUpdate) throw new Error('Data Product tidak ditemukan')
-			return true
-		}),
 	body('name')
 		.notEmpty().withMessage('Nama Product wajib diisi'),
 	body('description')
@@ -66,14 +74,6 @@ const updateProductValidator = [
 ]
 
 const stockAdjustmentProductValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Product wajib diisi')
-		.isInt().withMessage('Parameter ID harus berupa angka').bail()
-		.custom(async(value) => {
-			const productToUpdate = await Product.findByPk(value)
-			if (!productToUpdate) throw new Error('Data Product tidak ditemukan')
-			return true
-		}),
 	body('operationType')
 		.notEmpty().withMessage('Tipe Adjustment wajib diisi').bail()
 		.custom((value) => {
@@ -87,14 +87,6 @@ const stockAdjustmentProductValidator = [
 ]
 
 const priceAdjustmentProductValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Product wajib diisi')
-		.isInt().withMessage('Parameter ID harus berupa angka').bail()
-		.custom(async(value) => {
-			const productToUpdate = await Product.findByPk(value)
-			if (!productToUpdate) throw new Error('Data Product tidak ditemukan')
-			return true
-		}),
 	body('newPrice')
 		.notEmpty().withMessage('Harga Product wajib diisi')
 		.isNumeric().withMessage('Harga harus berupa angka').bail()
@@ -106,16 +98,6 @@ const priceAdjustmentProductValidator = [
     	})
 ]
 
-const changeStatusProductValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Product wajib diisi')
-		.isInt().withMessage('Parameter ID harus berupa angka').bail()
-		.custom(async(value) => {
-			const productToChange = await Product.findByPk(value)
-			if (!productToChange) throw new Error('Data Product tidak ditemukan')
-			return true
-		})
-]
 
 
 /* Router */
@@ -124,12 +106,15 @@ const productRouter = express.Router()
 const productController = new ProductController();
 
 productRouter.get('/', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), productController.getAllProducts)
-productRouter.get('/:id', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), getProductValidator, productController.getProductById)
+productRouter.get('/:id', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), checkProductIdValidator, productController.getProductById)
 
 productRouter.post('/', checkRoleMiddleware([Role.ADMIN]), createProductValidator, productController.createProduct)
-productRouter.put('/:id', checkRoleMiddleware([Role.ADMIN]), updateProductValidator, productController.updateProduct)
-productRouter.put('/:id/change-status', checkRoleMiddleware([Role.ADMIN]), changeStatusProductValidator, productController.changeStatusProduct)
-productRouter.put('/:id/adjustment/stock', checkRoleMiddleware([Role.ADMIN]), stockAdjustmentProductValidator, productController.stockAdjustment)
-productRouter.put('/:id/adjustment/price', checkRoleMiddleware([Role.ADMIN]), priceAdjustmentProductValidator, productController.priceAdjustment)
+productRouter.put('/:id', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, updateProductValidator, productController.updateProduct)
+productRouter.put('/:id/change-status', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, productController.changeStatusProduct)
+productRouter.put('/:id/adjustment/stock', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, stockAdjustmentProductValidator, productController.stockAdjustment)
+productRouter.put('/:id/adjustment/price', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, priceAdjustmentProductValidator, productController.priceAdjustment)
+
+productRouter.post('/:id/files', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, productFileValidator, productController.uploadProductFile)
+productRouter.delete('/:id/files/:fileId', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, checkProductImageIdValidator, productController.deleteProductFile)
 
 export default productRouter
