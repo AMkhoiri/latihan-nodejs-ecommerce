@@ -18,13 +18,11 @@ class ProductController extends BaseController {
 			let includeQuery = [
 				{
 					model: Category,
-					required: true,
-					attributes: ['id', 'name']
+					required: true
 				},
 				{
 					model: Brand,
-					required: true,
-					attributes: ['id', 'name']
+					required: true
 				},
 				{
 					model: ProductImage,
@@ -81,14 +79,8 @@ class ProductController extends BaseController {
 
 				let product = await Product.findByPk(id, {
 					include: [
-						{
-							model: Category,
-							attributes: ['id', 'name'],
-						}, 
-						{
-							model: Brand,
-							attributes: ['id', 'name'],
-						},
+						Category,
+						Brand,
 						ProductImage,
 						{
 							model: ProductHistory,

@@ -1,7 +1,8 @@
 'use strict';
 
 import {Model} from 'sequelize'
-import moment from "moment"
+
+import Utility from '../helpers/utility.js'
 
 export default (sequelize, DataTypes) => {
   class ProductImage extends Model {
@@ -52,22 +53,21 @@ export default (sequelize, DataTypes) => {
         msg: 'Mimetype cannot be empty',
       },
     },
-    createdAt: {
-      type: DataTypes.DATE,
-        get() {
-          return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm');
-        },
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-        get() {
-          return moment(this.getDataValue('updatedAt')).format('YYYY-MM-DD HH:mm');
-        },
-    },
   }, {
     sequelize,
     tableName: 'productImages',
     modelName: 'ProductImage',
+    defaultScope: {
+      attributes: { 
+        exclude: ['createdAt', 'updatedAt'] 
+      }
+    },
+    getterMethods: {
+      link() {
+        return Utility.generateFileLink('productImage', this.getDataValue('id'))
+      },
+    },
+
   });
   return ProductImage;
 };

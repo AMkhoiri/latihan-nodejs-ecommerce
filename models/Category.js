@@ -1,7 +1,6 @@
 'use strict';
 
 import {Model} from "sequelize"
-import moment from "moment"
 
 export default (sequelize, DataTypes) => {
   class Category extends Model {
@@ -24,22 +23,15 @@ export default (sequelize, DataTypes) => {
       },
     }, 
     isActive: DataTypes.BOOLEAN,
-    createdAt: {
-      type: DataTypes.DATE,
-        get() {
-          return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm');
-        },
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-        get() {
-          return moment(this.getDataValue('updatedAt')).format('YYYY-MM-DD HH:mm');
-        },
-    },
   }, {
     sequelize,
     tableName: 'categories',
     modelName: 'Category',
+    defaultScope: {
+      attributes: { 
+        exclude: ['createdAt', 'updatedAt'] 
+      }
+    },
   });
   return Category;
 };

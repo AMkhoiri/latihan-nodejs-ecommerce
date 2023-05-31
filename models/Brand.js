@@ -24,22 +24,15 @@ export default (sequelize, DataTypes) => {
       },
     }, 
     isActive: DataTypes.BOOLEAN,
-    createdAt: {
-      type: DataTypes.DATE,
-        get() {
-          return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm');
-        },
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-        get() {
-          return moment(this.getDataValue('updatedAt')).format('YYYY-MM-DD HH:mm');
-        },
-    },
   }, {
     sequelize,
     tableName: 'brands',
     modelName: 'Brand',
+    defaultScope: {
+      attributes: { 
+        exclude: ['createdAt', 'updatedAt'] 
+      }
+    },
   });
   return Brand;
 };

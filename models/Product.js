@@ -69,11 +69,11 @@ export default (sequelize, DataTypes) => {
     sequelize,
     tableName: 'products',
     modelName: 'Product',
-    defaultScope: {
-      where: {
-        isActive: true,
-      },
-    },
+    // defaultScope: {
+    //   where: {
+    //     isActive: true,
+    //   },
+    // },
   });
   return Product;
 };
