@@ -20,8 +20,8 @@ import sanitizerMiddleware from './middlewares/sanitizerMiddleware.js'
 const app = express()
 
 /* set middleware for parsing HTTP content */
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 app.use(multer().any('file'))
 
 /* set middleware for all routes */
@@ -38,10 +38,12 @@ app.use('/users', checkRoleMiddleware([Role.ADMIN]), userRouter)
 app.use('/brands', checkRoleMiddleware([Role.ADMIN]), brandRouter)
 app.use('/categories', checkRoleMiddleware([Role.ADMIN]), categoryRouter)
 app.use('/products', productRouter)
-app.use('/utility', utilityRouter)
 
 /* utility routes */
 app.use('/references', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), referenceRouter)
+app.use('/utility', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), utilityRouter)
+
+
 
 
 
@@ -51,12 +53,7 @@ app.use("/", (req, res) => {
     	code: 404,
       	success: false,
       	message: "Route tidak ditemukan"
-    });
+    })
 })
 
-
-
-
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
-});
+app.listen(3000, () => console.log('Server started on port 3000'))

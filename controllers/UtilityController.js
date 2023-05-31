@@ -5,15 +5,16 @@ import BaseController from './BaseController.js'
 
 import path from "path"
 import { fileURLToPath } from 'url'
+
 const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..') /*mendapatkan path 1 tingkat diatas ini*/
 
 class UtilityController extends BaseController {
 
 	async showFile(req, res) {
 		try {
-
 			if (req.params.type == "productImage") {
 				const image = await ProductImage.findByPk(req.params.id)
+
 			    if (!image) {
 			     	super.sendResponse(res, 404, "Data Gambar tidak ditemukan", null)
 			    }
