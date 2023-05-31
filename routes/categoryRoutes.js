@@ -5,9 +5,9 @@ import {Category} from '../models/index.js'
 import CategoryController from '../controllers/CategoryController.js'
 
 
-/* Validator */
+/* params Validator */
 
-const getCategoryValidator = [
+const checkCategoryIdValidator = [
 	param('id')
 		.notEmpty().withMessage('Parameter ID Category wajib diisi')
 		.custom(async (value) => {
@@ -17,31 +17,16 @@ const getCategoryValidator = [
 		})
 ]
 
+/*body validator*/
+
 const createCategoryValidator = [
 	body('name')
 		.notEmpty().withMessage('Nama Category wajib diisi')
 ]
 
 const updateCategoryValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Category wajib diisi')
-		.custom(async (value) => {
-			const categoryToUpdate = await Category.findByPk(value)
-			if (!categoryToUpdate) throw new Error('Data Category tidak ditemukan')
-			return true
-		}),
 	body('name')
 		.notEmpty().withMessage('Nama Category wajib diisi')
-]
-
-const changeStatusCategoryValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Category wajib diisi')
-		.custom(async (value) => {
-			const categoryToChange = await Category.findByPk(value)
-			if (!categoryToChange) throw new Error('Data Category tidak ditemukan')
-			return true
-		})
 ]
 
 
@@ -51,9 +36,9 @@ const categoryRouter = express.Router()
 const categoryController = new CategoryController();
 
 categoryRouter.get('/', categoryController.getAllCategories)
-categoryRouter.get('/:id', getCategoryValidator, categoryController.getCategoryById)
+categoryRouter.get('/:id', checkCategoryIdValidator, categoryController.getCategoryById)
 categoryRouter.post('/', createCategoryValidator, categoryController.createCategory)
-categoryRouter.put('/:id', updateCategoryValidator, categoryController.updateCategory)
-categoryRouter.put('/:id/change-status', changeStatusCategoryValidator, categoryController.changeStatusCategory)
+categoryRouter.put('/:id', checkCategoryIdValidator, updateCategoryValidator, categoryController.updateCategory)
+categoryRouter.put('/:id/change-status', checkCategoryIdValidator, categoryController.changeStatusCategory)
 
 export default categoryRouter

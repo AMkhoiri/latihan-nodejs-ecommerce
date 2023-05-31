@@ -33,7 +33,6 @@ const checkProductImageIdValidator = [
 		})
 ]
 
-
 /*body validator*/
 
 const createProductValidator = [

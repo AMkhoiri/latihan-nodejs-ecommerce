@@ -6,9 +6,9 @@ import {Role, User} from '../models/index.js'
 import UserController from '../controllers/UserController.js'
 
 
-/* Validator */
+/* params Validator */
 
-const getUserValidator = [
+const checkUserIdValidator = [
 	param('id')
 		.notEmpty().withMessage('Parameter ID User wajib diisi')
 		.custom(async (value) => {
@@ -17,6 +17,8 @@ const getUserValidator = [
 			return true
 		})
 ]
+
+/* body Validator */
 
 const createUserValidator = [
 	body('name')
@@ -41,13 +43,6 @@ const createUserValidator = [
 ]
 
 const updateUserValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID User wajib diisi')
-		.custom(async (value) => {
-			const userToUpdate = await User.findByPk(value)
-			if (!userToUpdate) throw new Error('Data User tidak ditemukan')
-			return true
-		}),
 	body('name')
 		.notEmpty().withMessage('Nama wajib diisi'),
 	body('username')
@@ -71,30 +66,17 @@ const updateUserValidator = [
 		})
 ]
 
-const changeStatusUserValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID User wajib diisi')
-		.custom(async (value) => {
-			const userToChange = await User.findByPk(value)
-			if (!userToChange) throw new Error('Data User tidak ditemukan')
-			return true
-		})
-]
 
 
-const additionalMiddleware = (req, res, next) => {
-	console.log('asdasdasda')
-	next()
-}
 /* Router */
 
 const userRouter = express.Router()
 const userController = new UserController();
 
 userRouter.get('/', userController.getAllUsers)
-userRouter.get('/:id', getUserValidator, userController.getUserById)
+userRouter.get('/:id', checkUserIdValidator, userController.getUserById)
 userRouter.post('/', createUserValidator, userController.createUser)
-userRouter.put('/:id', updateUserValidator, userController.updateUser)
-userRouter.put('/:id/change-status', changeStatusUserValidator, userController.changeStatusUser)
+userRouter.put('/:id', checkUserIdValidator, updateUserValidator, userController.updateUser)
+userRouter.put('/:id/change-status', checkUserIdValidator, userController.changeStatusUser)
 
 export default userRouter 
