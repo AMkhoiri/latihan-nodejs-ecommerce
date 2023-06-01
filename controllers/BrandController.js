@@ -42,9 +42,7 @@ class BrandController extends BaseController {
 		}
 		else {
 			try {
-				const id = req.params.id
-
-				let brand = await Brand.findByPk(id)
+				let brand = await Brand.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brand)
 			}
@@ -94,17 +92,15 @@ class BrandController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-
 				await Brand.update({
 					name: req.body.name
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
-				const updatedBrand = await Brand.findByPk(id)
+				const updatedBrand = await Brand.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Data Brand berhasil diubah", updatedBrand)
 			}
@@ -127,19 +123,18 @@ class BrandController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-				const brand = await Brand.findByPk(id)
+				const brand = await Brand.findByPk(req.params.id)
 				const newStatus = !brand.isActive
 
 				await Brand.update({
 					isActive: newStatus,
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
-				const updatedBrand = await Brand.findByPk(id)
+				const updatedBrand = await Brand.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Status Brand berhasil diubah", updatedBrand)
 			}

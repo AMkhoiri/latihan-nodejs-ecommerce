@@ -49,9 +49,7 @@ class UserController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-
-				let user = await User.findByPk(id, {
+				let user = await User.findByPk(req.params.id, {
 				  include: [Role]
 				})
 				super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
@@ -100,15 +98,13 @@ class UserController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-
 				await User.update({
 					name: req.body.name,
 					username: req.body.username,
 					roleId: req.body.roleId,
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
@@ -133,15 +129,14 @@ class UserController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-				const user = await User.findByPk(id)
+				const user = await User.findByPk(req.params.id)
 				const newStatus = !user.isActive
 
 				await User.update({
 					isActive: newStatus,
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 

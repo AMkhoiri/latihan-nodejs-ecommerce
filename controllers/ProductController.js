@@ -75,9 +75,7 @@ class ProductController extends BaseController {
 		}
 		else {
 			try {
-				const id = req.params.id
-
-				let product = await Product.findByPk(id, {
+				let product = await Product.findByPk(req.params.id, {
 					include: [
 						Category,
 						Brand,
@@ -149,18 +147,16 @@ class ProductController extends BaseController {
 		}
 		else {
 			try {
-				const id = req.params.id
-
 				await Product.update({
 					name: req.body.name,
 					description: req.body.description
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
-				const updatedProduct = await Product.findByPk(id)
+				const updatedProduct = await Product.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Data Product berhasil diubah", updatedProduct)
 			}
@@ -183,15 +179,14 @@ class ProductController extends BaseController {
 		}
 		else {
 			try {
-				const id = req.params.id
-				const product = await Product.findByPk(id)
+				const product = await Product.findByPk(req.params.id)
 				const newStatus = !product.isActive
 
 				await Product.update({
 					isActive: newStatus,
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
@@ -303,7 +298,6 @@ class ProductController extends BaseController {
 		}
 		else{
 			try{
-
 				const uploadPath = `storage/productImages/${req.params.id}`
 
 			    try {

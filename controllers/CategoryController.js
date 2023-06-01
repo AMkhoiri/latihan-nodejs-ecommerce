@@ -42,9 +42,7 @@ class CategoryController extends BaseController {
 		}
 		else {
 			try {
-				const id = req.params.id
-
-				let category = await Category.findByPk(id)
+				let category = await Category.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Data Category berhasil ditampilkan", category)
 			}
@@ -94,17 +92,15 @@ class CategoryController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-
 				await Category.update({
 					name: req.body.name
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
-				const updatedCategory = await Category.findByPk(id)
+				const updatedCategory = await Category.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Data Category berhasil diubah", updatedCategory)
 			}
@@ -127,19 +123,18 @@ class CategoryController extends BaseController {
 		}
 		else{
 			try {
-				const id = req.params.id
-				const category = await Category.findByPk(id)
+				const category = await Category.findByPk(req.params.id)
 				const newStatus = !category.isActive
 
 				await Category.update({
 					isActive: newStatus,
 				}, {
 					where: {
-						id: id
+						id: req.params.id
 					}
 				})
 
-				const updatedCategory = await Category.findByPk(id)
+				const updatedCategory = await Category.findByPk(req.params.id)
 
 				super.sendResponse(res, 200, "Status Category berhasil diubah", updatedCategory)
 			}
