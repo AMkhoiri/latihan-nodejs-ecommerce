@@ -4,7 +4,7 @@ import path from 'path'
 import fs from 'fs/promises'
 
 import {sequelize} from '../models/index.js' /*untuk db transaction*/
-import {User, Category, Brand, Product, ProductImage, ProductHistory} from '../models/index.js'
+import {User, Category, Brand, Product, ProductImage, ProductHistory, Discount, DiscountItem} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 class ProductController extends BaseController {
@@ -15,18 +15,24 @@ class ProductController extends BaseController {
 			const limit = perPage ? perPage : 10
 			const offset = page ? (page - 1) * limit : 0
 
+			const today = new Date()
+
 			let includeQuery = [
-				{
-					model: Category,
-					required: true
-				},
-				{
-					model: Brand,
-					required: true
-				},
+				Category,
+				Brand,
 				{
 					model: ProductImage,
-					attributes: ['name', 'path', 'extension', 'size', 'mimetype']
+					required: true
+				},
+				{
+					model: DiscountItem,
+					include: {
+						model: Discount,
+						where: {
+							startDate: { [Op.lte]: today},
+							endDate: { [Op.gte]: today}
+						}
+					}
 				}
 			]
 
@@ -52,7 +58,7 @@ class ProductController extends BaseController {
 		        ]
 		    }
 
-			let products = await Product.findAll({
+			const products = await Product.findAll({
 				attributes: ['id', 'name', 'price'],
 				where: whereQuery,
 				include: includeQuery,
@@ -75,11 +81,23 @@ class ProductController extends BaseController {
 		}
 		else {
 			try {
+				const today = new Date()
+
 				let product = await Product.findByPk(req.params.id, {
 					include: [
 						Category,
 						Brand,
 						ProductImage,
+						{
+							model: DiscountItem,
+							include: {
+								model: Discount,
+								where: {
+									startDate: { [Op.lte]: today},
+									endDate: { [Op.gte]: today}
+								}
+							}
+						},
 						{
 							model: ProductHistory,
 							include: [
@@ -300,6 +318,7 @@ class ProductController extends BaseController {
 			try{
 				const uploadPath = `storage/productImages/${req.params.id}`
 
+				/*check is directory exists*/
 			    try {
 			      	await fs.access(uploadPath);
 			    } catch (error) {
@@ -309,8 +328,8 @@ class ProductController extends BaseController {
 				for (let file of req.files) {
 
 					let name = file.originalname
-					let ext = path.extname(name)
-					let filePath = path.join(uploadPath, `${Date.now()}${ext}`)
+					let extension = path.extname(name)
+					let filePath = path.join(uploadPath, `${Date.now()}${extension}`)
 					let size = file.size
 					let mimetype = file.mimetype
 
@@ -320,7 +339,7 @@ class ProductController extends BaseController {
 						productId: req.params.id,
 						name,
 						path: filePath,
-						extension: ext,
+						extension,
 						size,
 						mimetype
 					})
@@ -356,3 +375,5 @@ class ProductController extends BaseController {
 }
 
 export default ProductController
+
+

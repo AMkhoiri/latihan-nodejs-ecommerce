@@ -77,6 +77,8 @@ import BrandModel from './Brand.js';
 import ProductModel from './Product.js';
 import ProductImageModel from './ProductImage.js';
 import ProductHistoryModel from './ProductHistory.js';
+import DiscountModel from './Discount.js';
+import DiscountItemModel from './DiscountItem.js';
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes);
@@ -86,6 +88,8 @@ const Brand = BrandModel(sequelize, Sequelize.DataTypes);
 const Product = ProductModel(sequelize, Sequelize.DataTypes);
 const ProductImage = ProductImageModel(sequelize, Sequelize.DataTypes);
 const ProductHistory = ProductHistoryModel(sequelize, Sequelize.DataTypes);
+const Discount = DiscountModel(sequelize, Sequelize.DataTypes);
+const DiscountItem = DiscountItemModel(sequelize, Sequelize.DataTypes);
 
 /* Definisi relasi antar model */
 Role.associate({ User });
@@ -96,12 +100,18 @@ Product.associate({
 	Category,
 	Brand,
 	ProductImage,
-	ProductHistory
+	ProductHistory,
+	DiscountItem
 });
 ProductImage.associate({ Product });
 ProductHistory.associate({ 
 	Product,
 	User 
+});
+Discount.associate({ DiscountItem });
+DiscountItem.associate({ 
+	Product,
+	Discount 
 });
 
 export {
@@ -112,5 +122,7 @@ export {
 	Brand,
 	Product,
 	ProductImage,
-	ProductHistory
+	ProductHistory,
+	Discount,
+	DiscountItem
 };

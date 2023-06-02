@@ -73,6 +73,11 @@ export default (sequelize, DataTypes) => {
     sequelize,
     tableName: 'productHistories',
     modelName: 'ProductHistories',
+    defaultScope: {
+      attributes: { 
+        exclude: [ 'productId', 'createdBy']
+      }
+    },
   });
   return ProductHistory;
 };
