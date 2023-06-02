@@ -11,7 +11,16 @@ class ProductController extends BaseController {
 
 	async getAllProducts(req, res) {
 		try {
-			const {page, perPage, search, categoryId, brandId} = req.query
+			const {
+				page,
+				perPage,
+				search,
+				categoryId,
+				brandId,
+				minPrice,
+				maxPrice,
+				orderBy
+			} = req.query
 			const limit = perPage ? perPage : 10
 			const offset = page ? (page - 1) * limit : 0
 
@@ -22,7 +31,7 @@ class ProductController extends BaseController {
 				Brand,
 				{
 					model: ProductImage,
-					required: true
+					// required: true
 				},
 				{
 					model: DiscountItem,
@@ -44,6 +53,12 @@ class ProductController extends BaseController {
 			if (brandId) {
 				whereQuery["brandId"] = brandId
 			}
+			if (minPrice) {
+				whereQuery["price"] = { [Op.gte]: minPrice }
+			}
+			if (maxPrice) {
+				whereQuery["price"] = { [Op.lte]: minPrice }
+			}
 			if (search) {
 		        whereQuery[Op.or] = [
 		         	{
@@ -58,10 +73,22 @@ class ProductController extends BaseController {
 		        ]
 		    }
 
+		    let orderQuery = []
+
+		    if (orderBy === Product.HIGHER_PRICE) {
+		    	orderQuery.push(['price', 'DESC'])
+		    }
+		    else if (orderBy === Product.LOWER_PRICE) {
+		    	orderQuery.push(['price', 'ASC'])
+		    }
+
+		    orderQuery.push(['createdAt', 'DESC'])	/* default: product terbaru */
+
 			const products = await Product.findAll({
-				attributes: ['id', 'name', 'price'],
+				attributes: ['id', 'name', 'price', 'createdAt'],
 				where: whereQuery,
 				include: includeQuery,
+				order: orderQuery,
 				limit,
 				offset
 			})

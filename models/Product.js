@@ -13,6 +13,10 @@ export default (sequelize, DataTypes) => {
     static PRICE_INCREASE = "price-increase"
     static PRICE_DECREASE = "price-decrease"
 
+    /* static property for ordering product list */
+    static HIGHER_PRICE = "higher-price"
+    static LOWER_PRICE = "lower-price"
+
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
