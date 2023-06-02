@@ -39,6 +39,6 @@ brandRouter.get('/', brandController.getAllBrands)
 brandRouter.get('/:id', checkBrandIdValidator, brandController.getBrandById)
 brandRouter.post('/', createBrandValidator, brandController.createBrand)
 brandRouter.put('/:id', checkBrandIdValidator, updateBrandValidator, brandController.updateBrand)
-brandRouter.put('/:id/change-status', checkBrandIdValidator, brandController.changeStatusBrand)
+brandRouter.patch('/:id/change-status', checkBrandIdValidator, brandController.changeStatusBrand)
 
 export default brandRouter

@@ -39,6 +39,6 @@ categoryRouter.get('/', categoryController.getAllCategories)
 categoryRouter.get('/:id', checkCategoryIdValidator, categoryController.getCategoryById)
 categoryRouter.post('/', createCategoryValidator, categoryController.createCategory)
 categoryRouter.put('/:id', checkCategoryIdValidator, updateCategoryValidator, categoryController.updateCategory)
-categoryRouter.put('/:id/change-status', checkCategoryIdValidator, categoryController.changeStatusCategory)
+categoryRouter.patch('/:id/change-status', checkCategoryIdValidator, categoryController.changeStatusCategory)
 
 export default categoryRouter

@@ -109,9 +109,9 @@ productRouter.get('/:id', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), chec
 
 productRouter.post('/', checkRoleMiddleware([Role.ADMIN]), createProductValidator, productController.createProduct)
 productRouter.put('/:id', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, updateProductValidator, productController.updateProduct)
-productRouter.put('/:id/change-status', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, productController.changeStatusProduct)
-productRouter.put('/:id/adjustment/stock', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, stockAdjustmentProductValidator, productController.stockAdjustment)
-productRouter.put('/:id/adjustment/price', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, priceAdjustmentProductValidator, productController.priceAdjustment)
+productRouter.patch('/:id/change-status', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, productController.changeStatusProduct)
+productRouter.patch('/:id/adjustment/stock', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, stockAdjustmentProductValidator, productController.stockAdjustment)
+productRouter.patch('/:id/adjustment/price', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, priceAdjustmentProductValidator, productController.priceAdjustment)
 
 productRouter.post('/:id/files', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, productFileValidator, productController.uploadProductFile)
 productRouter.delete('/:id/files/:fileId', checkRoleMiddleware([Role.ADMIN]), checkProductIdValidator, checkProductImageIdValidator, productController.deleteProductFile)

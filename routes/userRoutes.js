@@ -77,6 +77,6 @@ userRouter.get('/', userController.getAllUsers)
 userRouter.get('/:id', checkUserIdValidator, userController.getUserById)
 userRouter.post('/', createUserValidator, userController.createUser)
 userRouter.put('/:id', checkUserIdValidator, updateUserValidator, userController.updateUser)
-userRouter.put('/:id/change-status', checkUserIdValidator, userController.changeStatusUser)
+userRouter.patch('/:id/change-status', checkUserIdValidator, userController.changeStatusUser)
 
 export default userRouter 
