@@ -11,16 +11,7 @@ class ProductController extends BaseController {
 
 	async getAllProducts(req, res) {
 		try {
-			const {
-				page,
-				perPage,
-				search,
-				categoryId,
-				brandId,
-				minPrice,
-				maxPrice,
-				orderBy
-			} = req.query
+			const { page, perPage, search, categoryId, brandId, minPrice, maxPrice, orderBy } = req.query
 			const limit = perPage ? perPage : 10
 			const offset = page ? (page - 1) * limit : 0
 

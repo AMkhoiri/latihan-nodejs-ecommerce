@@ -20,4 +20,10 @@ catatan  proses development
 -- di sequelize, query where hanya bisa dilakukan sekali, beda dengan di Eloquent laravel yang bisa di "chaining" semisal "->where()->where()". kalau di sequelize harus "Where:{object}", tidak bisa "Where:{condition},Where:{condition}"
 -- jadi jika memerlukan banyak kondisi where, maka harus dibungkus menjadi suatu object dahulu.
 
--- pada beberapa function yg kompleks (yg mengandung banyak interaksi database yang berbeda2), kita menggunakan fitur Database Transaction yang disediakan oleh sequelize.
+-- pada beberapa function yg kompleks (yg mengandung banyak interaksi database yang berbeda2), disini menggunakan fitur Database Transaction yang disediakan oleh sequelize.
+
+-- pada fitur upload file, untuk parsing form-data, disini menggunakan third party middleware (multer), namun untuk menyimpan file nya tetap memakai modul fs. namun sebenarnya bisa saja langsung memanfaatkan multer, tanpa memakai modul fs. 
+
+-- untuk fitur pengiriman barang, kita memanfaatkan API external dari rajaongkir. ini mencakup pemakaian data provinsi, kecamatan, kurir, dan cek cost pengiriman.
+-- existing karena keterbatasan fitur, setelah order dibuat dan data pengirimannya terisi, maka dibuat seolah-olah barang yang dikirimkan tersebut sudah langsung diterima oleh pelanggan, 
+-- sehingga pelanggan bisa langsung konfirmasi penerimaan untuk menyelesaikan orderan

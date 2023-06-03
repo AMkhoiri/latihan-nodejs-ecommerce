@@ -79,6 +79,11 @@ import ProductImageModel from './ProductImage.js';
 import ProductHistoryModel from './ProductHistory.js';
 import DiscountModel from './Discount.js';
 import DiscountItemModel from './DiscountItem.js';
+import CartItemModel from './CartItem.js';
+import OrderModel from './Order.js';
+import OrderItemModel from './OrderItem.js';
+import OrderShippingModel from './OrderShipping.js';
+import OrderHistoryModel from './OrderHistory.js';
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes);
@@ -90,29 +95,27 @@ const ProductImage = ProductImageModel(sequelize, Sequelize.DataTypes);
 const ProductHistory = ProductHistoryModel(sequelize, Sequelize.DataTypes);
 const Discount = DiscountModel(sequelize, Sequelize.DataTypes);
 const DiscountItem = DiscountItemModel(sequelize, Sequelize.DataTypes);
+const CartItem = CartItemModel(sequelize, Sequelize.DataTypes);
+const Order = OrderModel(sequelize, Sequelize.DataTypes);
+const OrderItem = OrderItemModel(sequelize, Sequelize.DataTypes);
+const OrderShipping = OrderShippingModel(sequelize, Sequelize.DataTypes);
+const OrderHistory = OrderHistoryModel(sequelize, Sequelize.DataTypes);
 
 /* Definisi relasi antar model */
 Role.associate({ User });
 User.associate({ Role });
 Category.associate({ Product });
 Brand.associate({ Product });
-Product.associate({ 
-	Category,
-	Brand,
-	ProductImage,
-	ProductHistory,
-	DiscountItem
-});
+Product.associate({ Category, Brand, ProductImage, ProductHistory, DiscountItem });
 ProductImage.associate({ Product });
-ProductHistory.associate({ 
-	Product,
-	User 
-});
+ProductHistory.associate({ Product, User });
 Discount.associate({ DiscountItem });
-DiscountItem.associate({ 
-	Product,
-	Discount 
-});
+DiscountItem.associate({ Product, Discount });
+CartItem.associate({ User, Product });
+Order.associate({ User, OrderItem, OrderShipping, OrderHistory });
+OrderItem.associate({ Order, DiscountItem });
+OrderShipping.associate({ Order });
+OrderHistory.associate({ Order });
 
 export {
 	sequelize,  /* digunakan untuk database transaction*/
@@ -124,5 +127,10 @@ export {
 	ProductImage,
 	ProductHistory,
 	Discount,
-	DiscountItem
+	DiscountItem,
+	CartItem,
+	Order,
+	OrderItem,
+	OrderShipping,
+	OrderHistory
 };
