@@ -5,6 +5,8 @@ import {validationResult} from 'express-validator'
 import {Role, User} from '../models/index.js'
 import BaseController from './BaseController.js'
 
+import Response from '../helpers/Response.js'
+
 class UserController extends BaseController {
 	
 	async getAllUsers(req, res) {
@@ -34,122 +36,95 @@ class UserController extends BaseController {
   				offset
 			})
 
-			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
+			Response.send(res, 200, "Data User berhasil ditampilkan", users)
 		} 
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 
 	async getUserById(req, res) {
-		const errors = validationResult(req)
-
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+		try {
+			let user = await User.findByPk(req.params.id, {
+			  include: [Role]
+			})
+			
+			Response.send(res, 200, "Data User berhasil ditampilkan", user)
 		}
-		else{
-			try {
-				let user = await User.findByPk(req.params.id, {
-				  include: [Role]
-				})
-				super.sendResponse(res, 200, "Data User berhasil ditampilkan", user)
-			}
-			catch(error) {
-				super.handleServerError(req, res, error)
-			}
-		}		
+		catch(error) {
+			Response.serverError(req, res, error)
+		}	
 	}
 
 	async createUser(req, res) {
-		const errors = validationResult(req)
+		try {
+			await User.create({
+				name: req.body.name,
+				username: req.body.username,
+				password: await bcrypt.hash(req.body.password, 10),
+				roleId: req.body.roleId,
+			}, {
+				fields: ['name', 'username', 'password', 'roleId']
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			Response.send(res, 200, "Data User berhasil disimpan", null)
 		}
-		else{
-			try {
-				await User.create({
-					name: req.body.name,
-					username: req.body.username,
-					password: await bcrypt.hash(req.body.password, 10),
-					roleId: req.body.roleId,
-				}, {
-					fields: ['name', 'username', 'password', 'roleId']
-				})
-
-				super.sendResponse(res, 200, "Data User berhasil disimpan", null)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch (error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async updateUser(req, res) {
-		const errors = validationResult(req)
+		try {
+			await User.update({
+				name: req.body.name,
+				username: req.body.username,
+				roleId: req.body.roleId,
+			}, {
+				where: {
+					id: req.params.id
+				}
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			Response.send(res, 200, "Data User berhasil diubah", null)
 		}
-		else{
-			try {
-				await User.update({
-					name: req.body.name,
-					username: req.body.username,
-					roleId: req.body.roleId,
-				}, {
-					where: {
-						id: req.params.id
-					}
-				})
-
-				super.sendResponse(res, 200, "Data User berhasil diubah", null)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch (error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async changeStatusUser(req, res) {
-		const errors = validationResult(req)
+		try {
+			const user = await User.findByPk(req.params.id)
+			const newStatus = !user.isActive
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			await User.update({
+				isActive: newStatus,
+			}, {
+				where: {
+					id: req.params.id
+				}
+			})
+
+			Response.send(res, 200, "Status User berhasil diubah", null)
 		}
-		else{
-			try {
-				const user = await User.findByPk(req.params.id)
-				const newStatus = !user.isActive
-
-				await User.update({
-					isActive: newStatus,
-				}, {
-					where: {
-						id: req.params.id
-					}
-				})
-
-				super.sendResponse(res, 200, "Status User berhasil diubah", null)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch (error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 }

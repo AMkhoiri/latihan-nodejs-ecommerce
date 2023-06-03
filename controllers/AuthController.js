@@ -8,85 +8,74 @@ dotenv.config()
 import {Role, User} from '../models/index.js'
 import BaseController from './BaseController.js'
 
+import Response from '../helpers/Response.js'
+
 class AuthController extends BaseController {
 
 	async register(req, res) {
-		const errors = validationResult(req)
+		try {
+			const newUser = await User.create({
+				name: req.body.name,
+				username: req.body.username,
+				password: await bcrypt.hash(req.body.password, 10),
+				roleId: Role.CUSTOMER,
+			}, {
+				fields: ['name', 'username', 'password', 'roleId']
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			const user = await User.findByPk(newUser.id)
+
+			const data = {
+				user: user,
+				token: AuthController.generateToken(user),
+			}
+
+			Response.send(res, 200, "Registrasi berhasil", data)
 		}
-		else{
-			try {
-				const newUser = await User.create({
-					name: req.body.name,
-					username: req.body.username,
-					password: await bcrypt.hash(req.body.password, 10),
-					roleId: Role.CUSTOMER,
-				}, {
-					fields: ['name', 'username', 'password', 'roleId']
-				})
-
-				const user = await User.findByPk(newUser.id)
-
-				const data = {
-					user: user,
-					token: AuthController.generateToken(user),
-				}
-
-				super.sendResponse(res, 200, "Registrasi berhasil", data)
-			}
-			catch(error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async login(req, res) {
-		const errors = validationResult(req)
+		try {
+			const {username, password} = req.body
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
-		}
-		else{
-			try {
-				const {username, password} = req.body
+			const user = await User.findOne({ 
+				where: {username},
+				attributes: { include: ['password'] }
+			})
 
-				const user = await User.findOne({ 
-					where: {username},
-					attributes: { include: ['password'] }
-				})
+			const isPasswordValid = await bcrypt.compare(password, user.password)
 
-				const isPasswordValid = await bcrypt.compare(password, user.password)
-
-				if (!isPasswordValid) {
-					super.sendErrorResponse(res, 401, "Kata Sandi salah!");
-				}
-				else{
-					const userData = await User.findByPk(user.id)
-
-					const data = {
-						user: userData,
-						token: AuthController.generateToken(userData),
-					}
-
-					super.sendResponse(res, 200, "Login berhasil", data)
-				}
+			if (!isPasswordValid) {
+				Response.send(res, 401, "Kata Sandi salah!", null);
 			}
-			catch(error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
+			else{
+				const userData = await User.findByPk(user.id)
+
+				const data = {
+					user: userData,
+					token: AuthController.generateToken(userData),
+				}
+
+				Response.send(res, 200, "Login berhasil", data)
 			}
 		}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
+		}
+	
 	}
 
 	static generateToken(user) {

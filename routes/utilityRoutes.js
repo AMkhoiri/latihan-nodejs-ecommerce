@@ -2,7 +2,7 @@ import express from 'express'
 
 import UtilityController from '../controllers/UtilityController.js'
 
-/* Router */
+
 
 const utilityRouter = express.Router()
 const utilityController = new UtilityController();

@@ -3,7 +3,6 @@ import express from 'express'
 import DataReferenceController from '../controllers/DataReferenceController.js'
 
 
-/* Router */
 
 const referenceRouter = express.Router()
 const dataReferenceController = new DataReferenceController;

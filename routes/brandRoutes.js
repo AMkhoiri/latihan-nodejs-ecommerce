@@ -1,44 +1,42 @@
 import express from 'express'
-import {param, body} from 'express-validator'
 
-import {Brand} from '../models/index.js'
+import { 
+	checkBrandIdValidator, 
+	createBrandValidator, 
+	updateBrandValidator
+} from '../validators/brandValidator.js'
+import checkValidationMiddleware from '../middlewares/checkValidationMiddleware.js'
 import BrandController from '../controllers/BrandController.js'
 
 
-/* params Validator */
-
-const checkBrandIdValidator = [
-	param('id')
-		.notEmpty().withMessage('Parameter ID Brand wajib diisi')
-		.custom(async (value) => {
-			const brand = await Brand.findByPk(value)
-			if (!brand) throw new Error('Data Brand tidak ditemukan')
-			return true
-		})
-]
-
-/* body validator */
-
-const createBrandValidator = [
-	body('name')
-		.notEmpty().withMessage('Nama Brand wajib diisi')
-]
-
-const updateBrandValidator = [
-	body('name')
-		.notEmpty().withMessage('Nama Brand wajib diisi')
-]
-
-
-/* Router */
 
 const brandRouter = express.Router()
 const brandController = new BrandController();
 
-brandRouter.get('/', brandController.getAllBrands)
-brandRouter.get('/:id', checkBrandIdValidator, brandController.getBrandById)
-brandRouter.post('/', createBrandValidator, brandController.createBrand)
-brandRouter.put('/:id', checkBrandIdValidator, updateBrandValidator, brandController.updateBrand)
-brandRouter.patch('/:id/change-status', checkBrandIdValidator, brandController.changeStatusBrand)
+brandRouter.get('/', 
+	brandController.getAllBrands
+)
+brandRouter.get('/:id', 
+	checkBrandIdValidator,
+	checkValidationMiddleware,
+	brandController.getBrandById
+)
+brandRouter.post('/', 
+	createBrandValidator,
+	checkValidationMiddleware,
+	brandController.createBrand
+)
+brandRouter.put('/:id', 
+	checkBrandIdValidator,
+	updateBrandValidator,
+	checkValidationMiddleware,
+	brandController.updateBrand
+)
+brandRouter.patch('/:id/change-status', 
+	checkBrandIdValidator,
+	checkValidationMiddleware, 
+	brandController.changeStatusBrand
+)
+
 
 export default brandRouter

@@ -4,6 +4,8 @@ import {validationResult} from 'express-validator'
 import {Brand} from '../models/index.js'
 import BaseController from './BaseController.js'
 
+import Response from '../helpers/Response.js'
+
 class BrandController extends BaseController {
 	
 	async getAllBrands(req, res) {
@@ -27,125 +29,97 @@ class BrandController extends BaseController {
   				offset
 			})
 
-			super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brands)
+			Response.send(res, 200, "Data Brand berhasil ditampilkan", brands)
 		} 
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 
 	async getBrandById(req, res) {
-		const errors = validationResult(req)
+		try {
+			let brand = await Brand.findByPk(req.params.id)
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			Response.send(res, 200, "Data Brand berhasil ditampilkan", brand)
 		}
-		else {
-			try {
-				let brand = await Brand.findByPk(req.params.id)
-
-				super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brand)
-			}
-			catch(error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async createBrand(req, res) {
-		const errors = validationResult(req)
+		try {
+			const brand = await Brand.create({
+				name: req.body.name,
+			}, {
+				fields: ['name']
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			Response.send(res, 200, "Data Brand berhasil disimpan", brand)
 		}
-		else{
-			try {
-				const brand = await Brand.create({
-					name: req.body.name,
-				}, {
-					fields: ['name']
-				})
-
-				super.sendResponse(res, 200, "Data Brand berhasil disimpan", brand)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch (error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async updateBrand(req, res) {
-		const errors = validationResult(req)
+		try {
+			await Brand.update({
+				name: req.body.name
+			}, {
+				where: {
+					id: req.params.id
+				}
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			const updatedBrand = await Brand.findByPk(req.params.id)
+
+			Response.send(res, 200, "Data Brand berhasil diubah", updatedBrand)
 		}
-		else{
-			try {
-				await Brand.update({
-					name: req.body.name
-				}, {
-					where: {
-						id: req.params.id
-					}
-				})
-
-				const updatedBrand = await Brand.findByPk(req.params.id)
-
-				super.sendResponse(res, 200, "Data Brand berhasil diubah", updatedBrand)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch (error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async changeStatusBrand(req, res) {
-		const errors = validationResult(req)
+		try {
+			const brand = await Brand.findByPk(req.params.id)
+			const newStatus = !brand.isActive
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			await Brand.update({
+				isActive: newStatus,
+			}, {
+				where: {
+					id: req.params.id
+				}
+			})
+
+			const updatedBrand = await Brand.findByPk(req.params.id)
+
+			Response.send(res, 200, "Status Brand berhasil diubah", updatedBrand)
 		}
-		else{
-			try {
-				const brand = await Brand.findByPk(req.params.id)
-				const newStatus = !brand.isActive
-
-				await Brand.update({
-					isActive: newStatus,
-				}, {
-					where: {
-						id: req.params.id
-					}
-				})
-
-				const updatedBrand = await Brand.findByPk(req.params.id)
-
-				super.sendResponse(res, 200, "Status Brand berhasil diubah", updatedBrand)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch (error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 }

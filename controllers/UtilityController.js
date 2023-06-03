@@ -1,10 +1,11 @@
 import {Sequelize} from 'sequelize'	
+import path from "path"
+import { fileURLToPath } from 'url'
 
 import {Role, User, ProductImage} from '../models/index.js'
 import BaseController from './BaseController.js'
 
-import path from "path"
-import { fileURLToPath } from 'url'
+import Response from '../helpers/Response.js'
 
 const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..') /*mendapatkan path 1 tingkat diatas ini*/
 
@@ -16,18 +17,18 @@ class UtilityController extends BaseController {
 				const image = await ProductImage.findByPk(req.params.id)
 
 			    if (!image) {
-			     	super.sendResponse(res, 404, "Data Gambar tidak ditemukan", null)
+			     	Response.send(res, 404, "Data Gambar tidak ditemukan", null)
 			    }
 			    else{
 			    	res.type(image.mimetype).sendFile(__dirname + '/' + image.path)
 			    }
 			}
 			else {
-				super.sendResponse(res, 404, "Tipe File tidak dikenali", null)
+				Response.send(res, 404, "Tipe File tidak dikenali", null)
 			}
 		} 
 		catch(error) {
-		    super.handleServerError(req, res, error)
+		    Response.serverError(req, res, error)
 		}
 	}
 }

@@ -4,6 +4,8 @@ import {validationResult} from 'express-validator'
 import {Category} from '../models/index.js'
 import BaseController from './BaseController.js'
 
+import Response from '../helpers/Response.js'
+
 class CategoryController extends BaseController {
 	
 	async getAllCategories(req, res) {
@@ -27,125 +29,97 @@ class CategoryController extends BaseController {
 				offset
 			})
 
-			super.sendResponse(res, 200, "Data Category berhasil ditampilkan", categories)
+			Response.send(res, 200, "Data Category berhasil ditampilkan", categories)
 		} 
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 
 	async getCategoryById(req, res) {
-		const errors = validationResult(req)
+		try {
+			let category = await Category.findByPk(req.params.id)
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			Response.send(res, 200, "Data Category berhasil ditampilkan", category)
 		}
-		else {
-			try {
-				let category = await Category.findByPk(req.params.id)
-
-				super.sendResponse(res, 200, "Data Category berhasil ditampilkan", category)
-			}
-			catch(error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async createCategory(req, res) {
-		const errors = validationResult(req)
+		try {
+			const category = await Category.create({
+				name: req.body.name,
+			}, {
+				fields: ['name']
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			Response.send(res, 200, "Data Category berhasil disimpan", category)
 		}
-		else{
-			try {
-				const category = await Category.create({
-					name: req.body.name,
-				}, {
-					fields: ['name']
-				})
-
-				super.sendResponse(res, 200, "Data Category berhasil disimpan", category)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async updateCategory(req, res) {
-		const errors = validationResult(req)
+		try {
+			await Category.update({
+				name: req.body.name
+			}, {
+				where: {
+					id: req.params.id
+				}
+			})
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			const updatedCategory = await Category.findByPk(req.params.id)
+
+			Response.send(res, 200, "Data Category berhasil diubah", updatedCategory)
 		}
-		else{
-			try {
-				await Category.update({
-					name: req.body.name
-				}, {
-					where: {
-						id: req.params.id
-					}
-				})
-
-				const updatedCategory = await Category.findByPk(req.params.id)
-
-				super.sendResponse(res, 200, "Data Category berhasil diubah", updatedCategory)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 
 	async changeStatusCategory(req, res) {
-		const errors = validationResult(req)
+		try {
+			const category = await Category.findByPk(req.params.id)
+			const newStatus = !category.isActive
 
-		if (!errors.isEmpty()) {
-			super.handleValidationError(res, errors.array())
+			await Category.update({
+				isActive: newStatus,
+			}, {
+				where: {
+					id: req.params.id
+				}
+			})
+
+			const updatedCategory = await Category.findByPk(req.params.id)
+
+			Response.send(res, 200, "Status Category berhasil diubah", updatedCategory)
 		}
-		else{
-			try {
-				const category = await Category.findByPk(req.params.id)
-				const newStatus = !category.isActive
-
-				await Category.update({
-					isActive: newStatus,
-				}, {
-					where: {
-						id: req.params.id
-					}
-				})
-
-				const updatedCategory = await Category.findByPk(req.params.id)
-
-				super.sendResponse(res, 200, "Status Category berhasil diubah", updatedCategory)
-			}
-			catch (error) {
-				if (error instanceof Sequelize.ValidationError) {
-				    super.handleValidationError(res, error.errors)
-			    }
-			    else {
-			      	super.handleServerError(req, res, error)
-			    }
-			}
+		catch(error) {
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
 		}
 	}
 }

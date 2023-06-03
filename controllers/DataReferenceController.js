@@ -3,6 +3,8 @@ import {Sequelize, Op} from 'sequelize'
 import {Role, User, Category, Brand, Product} from '../models/index.js'
 import BaseController from './BaseController.js'
 
+import Response from '../helpers/Response.js'
+
 class DataReferenceController extends BaseController {
 
 	async role(req, res) {
@@ -30,10 +32,10 @@ class DataReferenceController extends BaseController {
   				offset
 			})
 
-			super.sendResponse(res, 200, "Data Role berhasil ditampilkan", roles)
+			Response.send(res, 200, "Data Role berhasil ditampilkan", roles)
 		} 
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 
@@ -73,10 +75,10 @@ class DataReferenceController extends BaseController {
   				offset
 			})
 
-			super.sendResponse(res, 200, "Data User berhasil ditampilkan", users)
+			Response.send(res, 200, "Data User berhasil ditampilkan", users)
 		}
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 
@@ -105,10 +107,10 @@ class DataReferenceController extends BaseController {
   				offset
 			})
 
-			super.sendResponse(res, 200, "Data Category berhasil ditampilkan", categories)
+			Response.send(res, 200, "Data Category berhasil ditampilkan", categories)
 		} 
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 
@@ -137,10 +139,10 @@ class DataReferenceController extends BaseController {
   				offset
 			})
 
-			super.sendResponse(res, 200, "Data Brand berhasil ditampilkan", brands)
+			Response.send(res, 200, "Data Brand berhasil ditampilkan", brands)
 		} 
 		catch(error) {
-			super.handleServerError(req, res, error)
+			Response.serverError(req, res, error)
 		}
 	}
 }
