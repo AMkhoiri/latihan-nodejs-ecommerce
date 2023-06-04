@@ -11,6 +11,7 @@ referenceRouter.get('/role', dataReferenceController.role)
 referenceRouter.get('/user', dataReferenceController.user)
 referenceRouter.get('/category', dataReferenceController.category)
 referenceRouter.get('/brand', dataReferenceController.brand)
+referenceRouter.get('/product', dataReferenceController.product)
 
 
 export default referenceRouter 

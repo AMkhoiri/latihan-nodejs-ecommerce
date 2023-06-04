@@ -50,7 +50,7 @@ class DiscountController extends BaseController {
 					model: DiscountItem,
 					include: {
 						model: Product,
-						attributes: ['name', 'description', 'price']
+						attributes: ['name', 'price']
 					}
 				}
 			})

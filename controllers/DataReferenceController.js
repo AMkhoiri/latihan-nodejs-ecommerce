@@ -10,24 +10,23 @@ class DataReferenceController extends BaseController {
 	async role(req, res) {
 		try {
 			const {page, perPage, search} = req.query
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
 
-			let whereCondition = {}
-			whereCondition['isActive'] = {
+			let whereQuery = {}
+			whereQuery['isActive'] = {
 	          	[Op.eq]: true
 	        }
 
 			if (search) {
-				whereCondition['name'] = {
+				whereQuery['name'] = {
 		          	[Op.iLike]: `%${search}%`
 		        }
 			}
 
-			const limit = perPage ? perPage : 10
-			const offset = page ? (page - 1) * limit : 0
-
 			let roles = await Role.findAll({
 				attributes: ['id', 'name'],
-				where: whereCondition,
+				where: whereQuery,
   				limit,
   				offset
 			})
@@ -41,21 +40,17 @@ class DataReferenceController extends BaseController {
 
 	async user(req, res) {
 		try {
-			const {page, perPage, search, roleId} = req.query
+			const {page, perPage, search} = req.query
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
 
-			let whereCondition = {}
-			whereCondition['isActive'] = {
+			let whereQuery = {}
+			whereQuery['isActive'] = {
 	          	[Op.eq]: true
 	        }
 
-			if (roleId) {
-				whereCondition['roleId'] = {
-		          	[Op.eq]: roleId
-		        }
-			}
-
 			if (search) {
-				whereCondition[Op.or] = [
+				whereQuery[Op.or] = [
 				    {
 					    name: { [Op.iLike]: `%${search}%` }
 				    },
@@ -65,12 +60,9 @@ class DataReferenceController extends BaseController {
 				]
 			}
 
-			const limit = perPage ? perPage : 10
-			const offset = page ? (page - 1) * limit : 0
-
 			let users = await User.findAll({
 				attributes: ['id', 'name', 'username'],
-				where: whereCondition,
+				where: whereQuery,
   				limit,
   				offset
 			})
@@ -85,24 +77,23 @@ class DataReferenceController extends BaseController {
 	async category(req, res) {
 		try {
 			const {page, perPage, search} = req.query
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
 
-			let whereCondition = {}
-			whereCondition['isActive'] = {
+			let whereQuery = {}
+			whereQuery['isActive'] = {
 	          	[Op.eq]: true
 	        }
 
 			if (search) {
-				whereCondition['name'] = {
+				whereQuery['name'] = {
 		          	[Op.iLike]: `%${search}%`
 		        }
 			}
 
-			const limit = perPage ? perPage : 10
-			const offset = page ? (page - 1) * limit : 0
-
 			let categories = await Category.findAll({
 				attributes: ['id', 'name'],
-				where: whereCondition,
+				where: whereQuery,
   				limit,
   				offset
 			})
@@ -117,30 +108,60 @@ class DataReferenceController extends BaseController {
 	async brand(req, res) {
 		try {
 			const {page, perPage, search} = req.query
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
 
-			let whereCondition = {}
-			whereCondition['isActive'] = {
+			let whereQuery = {}
+			whereQuery['isActive'] = {
 	          	[Op.eq]: true
 	        }
 
 			if (search) {
-				whereCondition['name'] = {
+				whereQuery['name'] = {
 		          	[Op.iLike]: `%${search}%`
 		        }
 			}
 
-			const limit = perPage ? perPage : 10
-			const offset = page ? (page - 1) * limit : 0
-
 			let brands = await Brand.findAll({
 				attributes: ['id', 'name'],
-				where: whereCondition,
+				where: whereQuery,
   				limit,
   				offset
 			})
 
 			Response.send(res, 200, "Data Brand berhasil ditampilkan", brands)
 		} 
+		catch(error) {
+			Response.serverError(req, res, error)
+		}
+	}
+
+	async product(req, res) {
+		try {
+			const {page, perPage, search} = req.query
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			let whereQuery = {}
+			whereQuery['isActive'] = {
+	          	[Op.eq]: true
+	        }
+
+			if (search) {
+				whereQuery['name'] = {
+		          	[Op.iLike]: `%${search}%`
+		        }
+			}
+
+			const products = await Product.findAll({
+				attributes: ['id', 'name'],
+				where: whereQuery,
+				limit,
+				offset
+			})
+
+			Response.send(res, 200, "Data Producr berhasil ditampilkan", products)
+		}
 		catch(error) {
 			Response.serverError(req, res, error)
 		}
