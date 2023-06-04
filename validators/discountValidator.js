@@ -1,5 +1,6 @@
 import {param, body} from 'express-validator'
 import moment from "moment"
+import {Op} from 'sequelize'
 
 import {Product, Discount, DiscountItem} from '../models/index.js'
 
@@ -53,7 +54,8 @@ const createDiscountValidator = [
 	body('discountItems')
 		.custom(async (values, {req}) => {
 			if (values) {
-				let productIds = [] /*prevent duplicate*/
+				let productIds = []
+
 				for(let value of values) {
 					const product = await Product.findByPk(value.productId)
 
@@ -62,6 +64,34 @@ const createDiscountValidator = [
 					}
 					
 					productIds.push(value.productId)
+
+					/* cegah agar tidak ada product yg punya lebih dari 1 discount pada waktu yg sama */
+					const checkIsProductOnDiscount = await DiscountItem.findOne({
+						where: { productId: product.id },
+						include: {
+							model: Discount,
+							required: true,
+							where: { 
+								[Op.or]: [
+									{
+										startDate: {
+											[Op.between]: [new Date(req.body.startDate), new Date(req.body.endDate)]
+										}
+									},
+									{
+										endDate: {
+											[Op.between]: [new Date(req.body.startDate), new Date(req.body.endDate)]
+										}
+									}
+								],
+								isActive: true
+							}
+						}
+					})
+
+					if (checkIsProductOnDiscount) {
+						throw new Error(`Product (${product.name}) telah memiliki Discount pada periode tanggal yang sama: ${checkIsProductOnDiscount.Discount.name}`)
+					}
 
 					if (req.body.type === Discount.IDR) {
 						if(!value.discountIdr) {
@@ -131,7 +161,8 @@ const updateDiscountValidator = [
 	body('discountItems')
 		.custom(async (values, {req}) => {
 			if (values) {
-				let productIds = [] /*prevent duplicate*/
+				let productIds = [] 
+
 				for(let value of values) {
 					const product = await Product.findByPk(value.productId)
 
@@ -140,6 +171,42 @@ const updateDiscountValidator = [
 					}
 					
 					productIds.push(value.productId)
+
+					/* cegah agar tidak ada product yg punya lebih dari 1 discount pada waktu yg sama */
+					let whereQuery = { productId: product.id }
+
+					if (value.id) {
+						whereQuery.id = {
+							[Op.ne]: value.id
+						}
+					}
+
+					const checkIsProductOnDiscount = await DiscountItem.findOne({
+						where: whereQuery,
+						include: {
+							model: Discount,
+							required: true,
+							where: { 
+								[Op.or]: [
+									{
+										startDate: {
+											[Op.between]: [new Date(req.body.startDate), new Date(req.body.endDate)]
+										}
+									},
+									{
+										endDate: {
+											[Op.between]: [new Date(req.body.startDate), new Date(req.body.endDate)]
+										}
+									}
+								],
+								isActive: true
+							}
+						}
+					})
+
+					if (checkIsProductOnDiscount) {
+						throw new Error(`Product (${product.name}) telah memiliki Discount pada periode tanggal yang sama: ${checkIsProductOnDiscount.Discount.name}`)
+					}
 
 					if (req.body.type === Discount.IDR) {
 						if(!value.discountIdr) {
