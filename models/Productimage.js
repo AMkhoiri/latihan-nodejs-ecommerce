@@ -59,7 +59,7 @@ export default (sequelize, DataTypes) => {
     modelName: 'ProductImage',
     defaultScope: {
       attributes: { 
-        exclude: ['productId', 'createdAt', 'updatedAt']
+        exclude: ['createdAt', 'updatedAt']
       }
     },
     getterMethods: {

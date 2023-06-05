@@ -24,17 +24,17 @@ class ProductController extends BaseController {
 				Brand,
 				{
 					model: ProductImage,
-					// required: true
+					required: true
 				},
 				{
 					model: DiscountItem,
 					include: {
 						model: Discount,
 						where: {
-							startDate: { [Op.lte]: today},
-							endDate: { [Op.gte]: today}
-						}
-					}
+							startDate: { [Op.lte]: today },
+							endDate: { [Op.gte]: today }
+						},
+					},
 				}
 			]
 
@@ -50,7 +50,7 @@ class ProductController extends BaseController {
 				whereQuery["price"] = { [Op.gte]: minPrice }
 			}
 			if (maxPrice) {
-				whereQuery["price"] = { [Op.lte]: minPrice }
+				whereQuery["price"] = { [Op.lte]: maxPrice }
 			}
 			if (search) {
 		        whereQuery[Op.or] = [
@@ -82,11 +82,15 @@ class ProductController extends BaseController {
 				where: whereQuery,
 				include: includeQuery,
 				order: orderQuery,
-				limit,
-				offset
+				// limit,
+				// offset
 			})
 
-			Response.send(res, 200, "Data Product berhasil ditampilkan", products)
+			/* pagination nya manual, karena kalau pakai fitur sequelize, 
+			condition yg ada di dalam "include" jadi tidak sesuai. aneh :( */
+			const limitedProducts = products.slice(offset, offset + limit)
+
+			Response.send(res, 200, "Data Product berhasil ditampilkan", limitedProducts)
 		}
 		catch (error) {
 			Response.serverError(req, res, error)
@@ -101,14 +105,17 @@ class ProductController extends BaseController {
 				include: [
 					Category,
 					Brand,
-					ProductImage,
+					{
+						model: ProductImage,
+						required: true
+					},
 					{
 						model: DiscountItem,
 						include: {
 							model: Discount,
 							where: {
-								startDate: { [Op.lte]: today},
-								endDate: { [Op.gte]: today}
+								startDate: { [Op.lte]: today },
+								endDate: { [Op.gte]: today }
 							}
 						}
 					},

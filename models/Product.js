@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
       Product.belongsTo(models.Brand, { foreignKey: 'brandId' });
       Product.hasMany(models.ProductImage, { foreignKey: 'productId' });
       Product.hasMany(models.ProductHistory, { foreignKey: 'productId' });
-      Product.hasMany(models.DiscountItem, { foreignKey: 'productId' });
+      Product.hasOne(models.DiscountItem, { foreignKey: 'productId' });
     }
   }
 

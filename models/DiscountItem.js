@@ -26,7 +26,7 @@ export default (sequelize, DataTypes) => {
     modelName: 'DiscountItem',
     defaultScope: {
       attributes: { 
-        exclude: ['productId', 'discountId', 'createdAt', 'updatedAt']
+        exclude: ['createdAt', 'updatedAt']
       }
     },
   });
