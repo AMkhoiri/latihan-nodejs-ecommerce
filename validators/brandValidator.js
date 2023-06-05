@@ -6,7 +6,8 @@ import {Brand} from '../models/index.js'
 
 const checkBrandIdValidator = [
 	param('id')
-		.notEmpty().withMessage('Parameter ID Brand wajib diisi')
+		.notEmpty().withMessage('Parameter ID Brand wajib diisi').bail()
+		.isInt({ min: 0 }).withMessage('Parameter ID Brand harus berupa angka').bail()
 		.custom(async (value) => {
 			const brand = await Brand.findByPk(value)
 			if (!brand) throw new Error('Data Brand tidak ditemukan')

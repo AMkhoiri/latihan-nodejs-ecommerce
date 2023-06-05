@@ -11,6 +11,7 @@ import brandRouter from './routes/brandRoutes.js'
 import categoryRouter from './routes/categoryRoutes.js'
 import productRouter from './routes/productRoutes.js'
 import discountRouter from './routes/discountRoutes.js'
+import cartRouter from './routes/cartRoutes.js'
 
 import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
 import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
@@ -39,6 +40,7 @@ app.use('/brands', checkRoleMiddleware([Role.ADMIN]), brandRouter)
 app.use('/categories', checkRoleMiddleware([Role.ADMIN]), categoryRouter)
 app.use('/products', productRouter)
 app.use('/discounts', checkRoleMiddleware([Role.ADMIN]), discountRouter)
+app.use('/cart', checkRoleMiddleware([Role.CUSTOMER]), cartRouter)
 
 /* utility routes */
 app.use('/references', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), referenceRouter)
