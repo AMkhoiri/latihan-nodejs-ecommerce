@@ -1,6 +1,6 @@
 import {param, body} from 'express-validator'
 
-import {CartItem, Order} from '../models/index.js'
+import {CartItem, Order, OrderShipping} from '../models/index.js'
 
 
 
@@ -11,6 +11,34 @@ const checkOrderIdValidator = [
 		.custom(async (value) => {
 			const order = await Order.findByPk(value)
 			if (!order) throw new Error('Data Order tidak ditemukan')
+			return true
+		})
+]
+
+const getShippingCostValidator = [
+	body('cartItemIds')
+		.notEmpty().withMessage('ID Item wajib diisi').bail()
+		.isArray().withMessage('ID Item harus berupa array').bail()
+		.custom(async (values, {req}) => {
+			if (values) {
+				for(let value of values) {
+					const cartItem = await CartItem.findByPk(value)
+					if (!cartItem || cartItem.userId !== req.userData.id) throw new Error('Data Cart Item tidak ditemukan')
+				}
+			}
+			return true
+		}),
+	body('destinationCityId')
+		.notEmpty().withMessage('ID Kota Tujuan wajib diisi').bail()
+		.isInt().withMessage('ID Kota Tujuan harus berupa angka'),
+	body('courierCode')
+		.notEmpty().withMessage('Kode Kurir wajib diisi').bail()
+		.custom((value) => {
+			let allowedValues = []
+			for (const courier of OrderShipping.COURIER) {
+				allowedValues.push(courier.code)
+			}
+			if (!allowedValues.includes(value)) throw new Error('Kurir tidak ditemukan')
 			return true
 		})
 ]
@@ -57,5 +85,6 @@ const checkoutValidator = [
 
 export {
 	checkOrderIdValidator,
+	getShippingCostValidator,
 	checkoutValidator
 }

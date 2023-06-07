@@ -150,6 +150,7 @@ class ProductController extends BaseController {
 				description: req.body.description,
 				stock: req.body.stock,
 				price: req.body.price,
+				weight: req.body.weight,
 			}, {
 				transaction
 			})
@@ -176,7 +177,7 @@ class ProductController extends BaseController {
 		try {
 			await Product.update({
 				name: req.body.name,
-				description: req.body.description
+				description: req.body.description,
 			}, {
 				where: {
 					id: req.params.id

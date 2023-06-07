@@ -2,7 +2,7 @@ import {Sequelize, Op} from 'sequelize'
 import dotenv from 'dotenv'
 dotenv.config()
 
-import {Role, User, Category, Brand, Product} from '../models/index.js'
+import {Role, User, Category, Brand, Product, OrderShipping} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
@@ -228,6 +228,17 @@ class DataReferenceController extends BaseController {
 			}
 
 			Response.send(res, 200, "Data Kota berhasil ditampilkan", citys)
+		}
+		catch(error) {
+			Response.serverError(req, res, error)
+		}
+	}
+
+	courier(req, res) {
+		try {
+			const couriers = OrderShipping.COURIER
+
+			Response.send(res, 200, "Data Kurir berhasil ditampilkan", couriers)
 		}
 		catch(error) {
 			Response.serverError(req, res, error)

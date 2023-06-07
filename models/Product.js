@@ -57,6 +57,13 @@ export default (sequelize, DataTypes) => {
         msg: 'Price cannot be empty',
       },
     },
+    weight: {
+      type: DataTypes.INTEGER,
+      allowNull: {
+        args: false,
+        msg: 'Weight cannot be empty',
+      },
+    },
     isActive: DataTypes.BOOLEAN,
     createdAt: {
       type: DataTypes.DATE,

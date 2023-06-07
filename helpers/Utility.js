@@ -10,12 +10,10 @@ class Utility {
 
 	static fetchData = (url, method, headers, body) => {
 		return new Promise((resolve, reject) => {
-			let requestBody = body ? JSON.stringify(body) : null
-
 			fetch(url, {
-				method: method,
-				headers: headers,
-				body: requestBody
+				method,
+				headers,
+				body
 			})
 			.then((response) => response.json())
 			.then((response) => {

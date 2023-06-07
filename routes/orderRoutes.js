@@ -2,6 +2,7 @@ import express from 'express'
 
 import { 
 	checkOrderIdValidator,
+	getShippingCostValidator,
 	checkoutValidator,
 } from '../validators/orderValidator.js'
 import checkValidationMiddleware from '../middlewares/checkValidationMiddleware.js'
@@ -15,6 +16,11 @@ const orderController = new OrderController()
 // orderRouter.get('/', 
 // 	orderController.
 // )
+orderRouter.post('/shipping-cost', 
+	getShippingCostValidator,
+	checkValidationMiddleware,
+	orderController.getShippingCost
+)
 orderRouter.post('/', 
 	checkoutValidator,
 	checkValidationMiddleware,

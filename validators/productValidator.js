@@ -55,7 +55,11 @@ const createProductValidator = [
 	body('price')
 		.notEmpty().withMessage('Harga Product wajib diisi')
 		.isNumeric().withMessage('Harga harus berupa angka')
-    	.isFloat({ min: 0 }).withMessage('Harga harus lebih besar dari 0')
+    	.isFloat({ min: 0 }).withMessage('Harga harus lebih besar dari 0'),
+    body('weight')
+		.notEmpty().withMessage('Berat (gram) Product wajib diisi')
+		.isNumeric().withMessage('Berat (gram) harus berupa angka')
+    	.isInt({ min: 10 }).withMessage('Berat (gram) harus lebih besar dari 10')
 ]
 
 const updateProductValidator = [

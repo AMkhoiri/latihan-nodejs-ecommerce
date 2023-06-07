@@ -9,6 +9,22 @@ export default (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+
+    static COURIER = [
+      {
+        code: "jne",
+        name: "JNE"
+      },
+      {
+        code: "pos",
+        name: "POS"
+      },
+      {
+        code: "tiki",
+        name: "TIKI"
+      }
+    ]
+
     static associate(models) {
       OrderShipping.belongsTo(models.Order, { foreignKey: 'orderId' })
     }

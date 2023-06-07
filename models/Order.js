@@ -28,7 +28,8 @@ export default (sequelize, DataTypes) => {
   Order.init({
     userId: DataTypes.INTEGER,
     status: DataTypes.STRING,
-    totalAmount: DataTypes.FLOAT
+    totalAmount: DataTypes.FLOAT,
+    totalWeight: DataTypes.INTEGER,
   }, {
     sequelize,
     tableName: 'orders',
