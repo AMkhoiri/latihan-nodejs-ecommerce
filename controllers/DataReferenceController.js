@@ -1,9 +1,12 @@
 import {Sequelize, Op} from 'sequelize'
+import dotenv from 'dotenv'
+dotenv.config()
 
 import {Role, User, Category, Brand, Product} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
+import Utility from '../helpers/utility.js'
 
 class DataReferenceController extends BaseController {
 
@@ -160,7 +163,71 @@ class DataReferenceController extends BaseController {
 				offset
 			})
 
-			Response.send(res, 200, "Data Producr berhasil ditampilkan", products)
+			Response.send(res, 200, "Data Product berhasil ditampilkan", products)
+		}
+		catch(error) {
+			Response.serverError(req, res, error)
+		}
+	}
+
+	async province(req, res) {
+		try {
+			const {page, perPage} = req.query
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			const url = process.env.RAJAONGKIR_API_URL + "province"
+			const headers = {
+				key: process.env.RAJAONGKIR_API_KEY
+			}
+
+			const data = await Utility.fetchData(url, "GET", headers, null)
+
+			const limitedResults = data.rajaongkir.results.slice(offset, offset + limit)
+
+			let provinces = []
+			for (let province of limitedResults) {
+				provinces.push({
+					id: parseInt(province.province_id),
+					name: province.province
+				})
+			}
+
+			Response.send(res, 200, "Data Provinsi berhasil ditampilkan", provinces)
+		}
+		catch(error) {
+			Response.serverError(req, res, error)
+		}
+	}
+
+	async city(req, res) {
+		try {
+			const {page, perPage} = req.query
+			const provinceId = req.query.provinceId ? req.query.provinceId : ""
+			const limit = perPage ? perPage : 10
+			const offset = page ? (page - 1) * limit : 0
+
+			const url = process.env.RAJAONGKIR_API_URL + "city" + "?province=" + provinceId
+			const headers = {
+				key: process.env.RAJAONGKIR_API_KEY
+			}
+
+			const data = await Utility.fetchData(url, "GET", headers, null)
+
+			const limitedResults = data.rajaongkir.results.slice(offset, offset + limit)
+
+			let citys = []
+			for (let city of limitedResults) {
+				citys.push({
+					id: parseInt(city.city_id),
+					name: city.city_name,
+					provinceId: parseInt(city.province_id),
+					provinceName: city.province,
+					postalCode: city.postal_code,
+				})
+			}
+
+			Response.send(res, 200, "Data Kota berhasil ditampilkan", citys)
 		}
 		catch(error) {
 			Response.serverError(req, res, error)
