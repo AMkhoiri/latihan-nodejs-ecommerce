@@ -16,7 +16,7 @@ class CartController extends BaseController {
 				include: [
 					{
 						model: Product,
-						attributes: ['id', 'name', 'price', 'stock'],
+						attributes: ['id', 'name', 'price', 'stock' , 'isActive'],
 						include: [
 							Category,
 							Brand,
@@ -40,9 +40,11 @@ class CartController extends BaseController {
 			})
 
 			const formattedCartItems = cartItems.map((cartItem) => {
+				const isReadyProduct = cartItem.Product.isActive
 			    const isReadyStock = cartItem.Product.stock >= cartItem.quantity
 			    return {
 			      	...cartItem.toJSON(),
+			      	isReadyProduct,
 			      	isReadyStock,
 			    }
 			})

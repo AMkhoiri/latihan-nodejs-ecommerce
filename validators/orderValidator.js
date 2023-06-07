@@ -1,0 +1,61 @@
+import {param, body} from 'express-validator'
+
+import {CartItem, Order} from '../models/index.js'
+
+
+
+const checkOrderIdValidator = [
+	param('id')
+		.notEmpty().withMessage('Parameter ID Order wajib diisi').bail()
+		.isInt({ min: 0 }).withMessage('Parameter ID Order harus berupa angka').bail()
+		.custom(async (value) => {
+			const order = await Order.findByPk(value)
+			if (!order) throw new Error('Data Order tidak ditemukan')
+			return true
+		})
+]
+
+const checkoutValidator = [
+	body('cartItemIds')
+		.notEmpty().withMessage('ID Item wajib diisi').bail()
+		.isArray().withMessage('ID Item harus berupa array').bail()
+		.custom(async (values, {req}) => {
+			if (values) {
+				for(let value of values) {
+					const cartItem = await CartItem.findByPk(value)
+					if (!cartItem || cartItem.userId !== req.userData.id) throw new Error('Data Cart Item tidak ditemukan')
+				}
+			}
+			return true
+		}),
+	body('orderShipping')
+		.notEmpty().withMessage('Data Pengiriman wajib diisi').bail()
+		.isObject().withMessage('Data Pengiriman harus berupa objek'),
+	body('orderShipping.provinceId')
+		.notEmpty().withMessage('ID Provinsi wajib diisi').bail()
+		.isInt().withMessage('ID Provinsi harus berupa angka'),
+	body('orderShipping.cityId')
+		.notEmpty().withMessage('ID Kota wajib diisi').bail()
+		.isInt().withMessage('ID Kota harus berupa angka'),
+	body('orderShipping.address')
+		.notEmpty().withMessage('Alamat wajib diisi'),
+	body('orderShipping.weight')
+		.notEmpty().withMessage('Berat wajib diisi')
+		.isInt({ min: 1 }).withMessage('Berat harus berupa angka'),
+	body('orderShipping.courierCode')
+		.notEmpty().withMessage('Kode Kurir wajib diisi'),
+	body('orderShipping.serviceCode')
+		.notEmpty().withMessage('Kode Service wajib diisi'),
+	body('orderShipping.cost')
+		.notEmpty().withMessage('Kode Service wajib diisi').bail()
+		.isInt({ min: 1 }).withMessage('Ongkos Pengiriman harus berupa angka'),
+	body('orderShipping.estimatedInDay')
+		.notEmpty().withMessage('Estimasi Pengiriman wajib diisi'),
+
+]
+
+
+export {
+	checkOrderIdValidator,
+	checkoutValidator
+}

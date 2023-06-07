@@ -110,7 +110,7 @@ Product.associate({ Category, Brand, ProductImage, ProductHistory, DiscountItem 
 ProductImage.associate({ Product });
 ProductHistory.associate({ Product, User });
 Discount.associate({ DiscountItem });
-DiscountItem.associate({ Product, Discount });
+DiscountItem.associate({ Product, Discount, OrderItem });
 CartItem.associate({ User, Product });
 Order.associate({ User, OrderItem, OrderShipping, OrderHistory });
 OrderItem.associate({ Order, Product, DiscountItem });

@@ -4,6 +4,15 @@ import {Model} from 'sequelize'
 
 export default (sequelize, DataTypes) => {
   class Order extends Model {
+
+    /* static prperty for Enum Order status */
+    static PENDING = "pending"
+    static PAID = "paid"
+    static SENT = "sent"
+    static DONE = "done"
+    static FAIL = "fail"
+    static CANCELED = "canceled"
+
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -18,10 +27,6 @@ export default (sequelize, DataTypes) => {
   }
   Order.init({
     userId: DataTypes.INTEGER,
-    transactionDate: DataTypes.DATE,
-    paymentDate: DataTypes.DATE,
-    sentDate: DataTypes.DATE,
-    receivedDate: DataTypes.DATE,
     status: DataTypes.STRING,
     totalAmount: DataTypes.FLOAT
   }, {

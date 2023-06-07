@@ -22,26 +22,9 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      orderDate: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      paymentDate: {
-        type: DataTypes.DATE
-      },
-      shippingDate: {
-        type: DataTypes.DATE
-      },
-      confirmationDate: {
-        type: DataTypes.DATE
-      },
-      shippingAddress: {
-        type: DataTypes.TEXT,
-        allowNull: false
-      },
       totalAmount: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: true
       },
       status: {
         type: DataTypes.STRING,

@@ -34,8 +34,9 @@ module.exports = {
       },
       discountItemId: {
         type: DataTypes.INTEGER,
+        allowNull: true,
         references: {
-          model: 'orderItems',
+          model: 'discountItems',
           key: 'id'
         },
         onUpdate: 'CASCADE',

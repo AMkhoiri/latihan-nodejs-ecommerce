@@ -30,6 +30,16 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      createdBy: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        // references: {
+        //   model: 'users',
+        //   key: 'id'
+        // },
+        // onUpdate: 'CASCADE',
+        // onDelete: 'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE

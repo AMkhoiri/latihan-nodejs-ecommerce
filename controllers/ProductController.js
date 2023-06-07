@@ -24,7 +24,7 @@ class ProductController extends BaseController {
 				Brand,
 				{
 					model: ProductImage,
-					required: true
+					// required: true
 				},
 				{
 					model: DiscountItem,
@@ -107,7 +107,7 @@ class ProductController extends BaseController {
 					Brand,
 					{
 						model: ProductImage,
-						required: true
+						// required: true
 					},
 					{
 						model: DiscountItem,
