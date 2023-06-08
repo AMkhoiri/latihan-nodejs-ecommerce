@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import {sequelize} from '../models/index.js' /*untuk db transaction*/
-import {User, Category, Brand, Product, ProductImage, ProductHistory, Discount, DiscountItem, CartItem, Order, OrderItem, OrderShipping, OrderHistory} from '../models/index.js'
+import {Role, User, Category, Brand, Product, ProductImage, ProductHistory, Discount, DiscountItem, CartItem, Order, OrderItem, OrderShipping, OrderHistory} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
@@ -48,6 +48,60 @@ class OrderController extends BaseController {
 				Response.serverError(req, res, err)
 			}
 		}
+		catch(error) {
+			Response.serverError(req, res, error)
+		}
+	}
+
+	async getAllOrders(req, res) {
+		try {
+			const { status, startDate, endDate } = req.query
+
+			let whereQuery = {}
+
+			if (req.userData.roleId === Role.CUSTOMER) {
+				whereQuery.userId = req.userData.id
+			}
+
+			const statusList = [
+				Order.PENDING, 
+				Order.PAID, 
+				Order.SENT, 
+				Order.DONE, 
+				Order.FAIL, 
+				Order.CANCELED
+			]
+			
+			if (statusList.includes(status)) {
+				whereQuery.status = status
+			}
+			
+			if (startDate && endDate) {
+			  	whereQuery.createdAt = { [Op.between]: [startDate, endDate] }
+			} else if (startDate) {
+			  	whereQuery.createdAt = { [Op.gte]: startDate }
+			} else if (endDate) {
+			  	whereQuery.createdAt = { [Op.lte]: endDate }
+			}
+
+			const orders = await Order.findAll({
+				attributes: ['id', 'userId', 'status', 'totalAmount', 'totalWeight', 'createdAt'],
+				include: [
+					{
+						model: OrderItem,
+						include: [
+							{
+								model: Product,
+								attributes: ['name']
+							}
+						]
+					},
+				],
+				where: whereQuery
+			})
+
+			Response.send(res, 200, "Data Order berhasil ditampilkan", orders)
+		} 
 		catch(error) {
 			Response.serverError(req, res, error)
 		}

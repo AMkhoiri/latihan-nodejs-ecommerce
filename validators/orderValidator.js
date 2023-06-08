@@ -1,4 +1,5 @@
-import {param, body} from 'express-validator'
+import {param, query, body} from 'express-validator'
+import moment from "moment"
 
 import {CartItem, Order, OrderShipping} from '../models/index.js'
 
@@ -13,6 +14,26 @@ const checkOrderIdValidator = [
 			if (!order) throw new Error('Data Order tidak ditemukan')
 			return true
 		})
+]
+
+const getAllOrdersValidator = [
+	query('startDate')
+		.optional()
+		.isDate({ format: 'YYYY-MM-DD' }).withMessage('Format Filter Tanggal tidak valid'),
+	query('endDate')
+		.optional()
+		.isDate({ format: 'YYYY-MM-DD' }).withMessage('Format Filter Tanggal tidak valid')
+		.custom((value, { req }) => {
+		    if (!moment(value).isAfter(req.body.startDate)) throw new Error('Filter Tanggal Akhir harus setelah Tanggal Mulai')
+		    return true
+		}),
+	query('status')
+		.optional()
+		.custom((value) => {
+			const allowedValues = [Order.PENDING, Order.PAID, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
+			if (!allowedValues.includes(value)) throw new Error('Status Order salah')
+			return true
+		}),
 ]
 
 const getShippingCostValidator = [
@@ -85,6 +106,7 @@ const checkoutValidator = [
 
 export {
 	checkOrderIdValidator,
+	getAllOrdersValidator,
 	getShippingCostValidator,
 	checkoutValidator
 }

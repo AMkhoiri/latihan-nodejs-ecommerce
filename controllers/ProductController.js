@@ -46,12 +46,14 @@ class ProductController extends BaseController {
 			if (brandId) {
 				whereQuery["brandId"] = brandId
 			}
-			if (minPrice) {
-				whereQuery["price"] = { [Op.gte]: minPrice }
+			if (minPrice && maxPrice) {
+			  	whereQuery["price"] = { [Op.between]: [minPrice, maxPrice] }
+			} else if (minPrice) {
+			  	whereQuery["price"] = { [Op.gte]: minPrice }
+			} else if (maxPrice) {
+			  	whereQuery["price"] = { [Op.lte]: maxPrice }
 			}
-			if (maxPrice) {
-				whereQuery["price"] = { [Op.lte]: maxPrice }
-			}
+
 			if (search) {
 		        whereQuery[Op.or] = [
 		         	{

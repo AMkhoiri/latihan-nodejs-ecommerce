@@ -36,7 +36,7 @@ export default (sequelize, DataTypes) => {
     modelName: 'Order',
     defaultScope: {
       attributes: { 
-        // exclude: ['createdAt', 'updatedAt']
+        exclude: ['createdAt', 'updatedAt']
       }
     },
   });

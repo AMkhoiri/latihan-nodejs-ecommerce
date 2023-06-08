@@ -2,6 +2,7 @@ import express from 'express'
 
 import { 
 	checkOrderIdValidator,
+	getAllOrdersValidator,
 	getShippingCostValidator,
 	checkoutValidator,
 } from '../validators/orderValidator.js'
@@ -13,9 +14,11 @@ import OrderController from '../controllers/OrderController.js'
 const orderRouter = express.Router()
 const orderController = new OrderController()
 
-// orderRouter.get('/', 
-// 	orderController.
-// )
+orderRouter.get('/', 
+	getAllOrdersValidator,
+	checkValidationMiddleware,
+	orderController.getAllOrders
+)
 orderRouter.post('/shipping-cost', 
 	getShippingCostValidator,
 	checkValidationMiddleware,
