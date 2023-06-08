@@ -17,14 +17,17 @@ export default (sequelize, DataTypes) => {
     }
 
     static async record(orderId, historyType, userId, transaction) {
+      const option = {}
+      if (transaction) {
+        option = {transaction}
+      }
+
       await OrderHistory.create({
         orderId,
         historyType,
         date: moment().format('YYYY-MM-DD HH:mm'),
         createdBy: userId,
-      }, {
-        transaction
-      })
+      }, option )
     }
   }
 

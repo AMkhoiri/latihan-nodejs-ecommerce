@@ -31,7 +31,7 @@ module.exports = {
         allowNull: false
       },
       createdBy: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.INTEGER,
         // references: {
         //   model: 'users',

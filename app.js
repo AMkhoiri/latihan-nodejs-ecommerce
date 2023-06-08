@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 
-import {Role} from './models/index.js'
+import { Role } from './models/index.js'
 
 import authRouter from './routes/authRoutes.js'
 import referenceRouter from './routes/referenceRoutes.js'
@@ -18,8 +18,13 @@ import checkAuthMiddleware from './middlewares/checkAuthMiddleware.js'
 import checkRoleMiddleware from './middlewares/checkRoleMiddleware.js'
 import sanitizerMiddleware from './middlewares/sanitizerMiddleware.js'
 
+import { checkPaymentOrderJob } from './schedulers.js'
+
 
 const app = express()
+
+/* run scheduler */
+checkPaymentOrderJob()
 
 /* set middleware for parsing HTTP content */
 app.use(express.urlencoded({ extended: true }))
