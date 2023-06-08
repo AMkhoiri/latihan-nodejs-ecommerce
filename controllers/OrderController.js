@@ -19,7 +19,7 @@ class OrderController extends BaseController {
 				    include: [Product]
 				})
 
-			  totalWeight += cartItem.Product.weight * cartItem.quantity;
+			  	totalWeight += cartItem.Product.weight * cartItem.quantity;
 			}
 			
 			const url = process.env.RAJAONGKIR_API_URL + "cost"
@@ -114,10 +114,17 @@ class OrderController extends BaseController {
 					transaction
 				})
 
+				/* temporarily freeze the stock */
+				let product = await Product.findByPk(cartItem.productId)
+				product.frozenStock += orderItem.quantity
+				product.stock -= orderItem.quantity
+				await product.save({transaction})
+
 				/* delete item from cart */
 				await cartItem.destroy({transaction})
 			}
 
+			order.totalWeight = req.body.orderShipping.weight
 			order.totalAmount = totalAmount
         	await order.save({ transaction })
 
