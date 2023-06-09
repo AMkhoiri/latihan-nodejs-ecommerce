@@ -30,6 +30,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      note: {
+        type: DataTypes.TEXT,
+        allowNull: true
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE

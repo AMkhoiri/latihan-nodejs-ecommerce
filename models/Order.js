@@ -8,10 +8,15 @@ export default (sequelize, DataTypes) => {
     /* static prperty for Enum Order status */
     static PENDING = "pending"
     static PAID = "paid"
+    static PAYMENT_REJECTED = "payment-rejected"
     static SENT = "sent"
     static DONE = "done"
     static FAIL = "fail"
     static CANCELED = "canceled"
+
+    /* static prperty for Enum Payment Confirmation */
+    static REJECT_PAYMENT = "reject-payment"
+    static ACCEPT_PAYMENT = "accept-payment"
 
     /**
      * Helper method for defining associations.
@@ -23,13 +28,30 @@ export default (sequelize, DataTypes) => {
       Order.hasMany(models.OrderItem, { foreignKey: 'orderId' })
       Order.hasMany(models.OrderHistory, { foreignKey: 'orderId' })
       Order.hasOne(models.OrderShipping, { foreignKey: 'orderId' })
+      Order.hasOne(models.OrderPaymentEvidence, { foreignKey: 'orderId' })
     }
   }
+
+  const statusEnumValues = [Order.PENDING, Order.PAID, Order.PAYMENT_REJECTED, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
+
   Order.init({
     userId: DataTypes.INTEGER,
-    status: DataTypes.STRING,
+    status: {
+      type: DataTypes.ENUM(statusEnumValues),
+      validate: {
+        isIn: {
+          args: [statusEnumValues],
+          msg: 'Order Status is wrong'
+        }
+      },
+      allowNull: {
+        args: false,
+        msg: 'Order Status cannot be empty',
+      },
+    },
     totalAmount: DataTypes.FLOAT,
     totalWeight: DataTypes.INTEGER,
+    note: DataTypes.TEXT,
   }, {
     sequelize,
     tableName: 'orders',

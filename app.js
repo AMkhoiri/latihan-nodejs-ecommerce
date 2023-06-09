@@ -47,7 +47,7 @@ app.use('/categories', checkRoleMiddleware([Role.ADMIN]), categoryRouter)
 app.use('/products', productRouter)
 app.use('/discounts', checkRoleMiddleware([Role.ADMIN]), discountRouter)
 app.use('/cart', checkRoleMiddleware([Role.CUSTOMER]), cartRouter)
-app.use('/orders', checkRoleMiddleware([Role.CUSTOMER]), orderRouter)
+app.use('/orders', orderRouter)
 
 /* utility routes */
 app.use('/references', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), referenceRouter)

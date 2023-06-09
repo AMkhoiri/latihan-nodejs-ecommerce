@@ -1,7 +1,7 @@
 import {param, query, body} from 'express-validator'
 import moment from "moment"
 
-import {CartItem, Order, OrderShipping} from '../models/index.js'
+import {Role, CartItem, Order, OrderShipping} from '../models/index.js'
 
 
 
@@ -19,10 +19,26 @@ const getAllOrdersValidator = [
 	query('status')
 		.optional()
 		.custom((value) => {
-			const allowedValues = [Order.PENDING, Order.PAID, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
+			const allowedValues = [Order.PENDING, Order.PAID, Order.PAYMENT_REJECTED, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
 			if (!allowedValues.includes(value)) throw new Error('Filter Status Order salah')
 			return true
 		}),
+]
+
+const getOrderValidator = [
+	param('id')
+		.notEmpty().withMessage('Parameter ID Order wajib diisi').bail()
+		.isInt({ min: 0 }).withMessage('Parameter ID Order harus berupa angka').bail()
+		.custom(async (value, { req }) => {
+			const order = await Order.findByPk(value)
+			if (!order) {
+				throw new Error('Data Order tidak ditemukan')
+			}
+			else if (req.userData.roleId == Role.CUSTOMER && order.userId !== req.userData.id) {
+				throw new Error('Data Order tidak ditemukan')
+			}
+			return true
+		})
 ]
 
 const getShippingCostValidator = [
@@ -93,7 +109,7 @@ const checkoutValidator = [
 
 /*file validator*/
 
-const orderPaymentEvidenceValidator = [
+const payValidator = [
 	param('id')
 		.notEmpty().withMessage('Parameter ID Order wajib diisi').bail()
 		.isInt({ min: 0 }).withMessage('Parameter ID Order harus berupa angka').bail()
@@ -107,6 +123,7 @@ const orderPaymentEvidenceValidator = [
 		/*required*/
 		.custom((value, { req }) => {
 			if (!req.files || req.files.length === 0) throw new Error('File harus diunggah')
+			if (req.files.length !== 1) throw new Error('Hanya boleh mengunggah 1 file')
 			return true
 		}).bail()
 		/*allowed extensions*/
@@ -138,11 +155,37 @@ const orderPaymentEvidenceValidator = [
 	    })
 ]
 
+const paymentConfirmationValidator = [
+	param('id')
+		.notEmpty().withMessage('Parameter ID Order wajib diisi').bail()
+		.isInt({ min: 0 }).withMessage('Parameter ID Order harus berupa angka').bail()
+		.custom(async (value, { req }) => {
+			const order = await Order.findByPk(value)
+			if (!order) throw new Error('Data Order tidak ditemukan')
+			return true
+		}),
+	body('confirmationType')
+		.custom((value) => {
+			const allowedValues = [Order.REJECT_PAYMENT, Order.ACCEPT_PAYMENT]
+			if (!allowedValues.includes(value)) throw new Error('Tipe Konfirmasi Pembayaran salah')
+			return true
+		}),
+	body('note')
+		.custom((value, {req}) => {
+			if (req.body.confirmationType === Order.REJECT_PAYMENT) {
+				if (!value) throw new Error('Catatan wajib diisi ketika menolak Pembayaran')
+			}
+			return true
+		})
+]
+
 
 
 export {
 	getAllOrdersValidator,
+	getOrderValidator,
 	getShippingCostValidator,
 	checkoutValidator,
-	orderPaymentEvidenceValidator
+	payValidator,
+	paymentConfirmationValidator,
 }

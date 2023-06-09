@@ -31,7 +31,7 @@ export default (sequelize, DataTypes) => {
     }
   }
 
-  const historyTypeEnumValues = [Order.PENDING, Order.PAID, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
+  const historyTypeEnumValues = [Order.PENDING, Order.PAID, Order.PAYMENT_REJECTED, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
 
   OrderHistory.init({
     orderId: DataTypes.INTEGER,

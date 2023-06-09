@@ -114,7 +114,7 @@ ProductHistory.associate({ Product, User });
 Discount.associate({ DiscountItem });
 DiscountItem.associate({ Product, Discount, OrderItem });
 CartItem.associate({ User, Product });
-Order.associate({ User, OrderItem, OrderShipping, OrderHistory });
+Order.associate({ User, OrderItem, OrderShipping, OrderPaymentEvidence, OrderHistory });
 OrderItem.associate({ Order, Product, DiscountItem });
 OrderShipping.associate({ Order });
 OrderHistory.associate({ Order });

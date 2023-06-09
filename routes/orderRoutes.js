@@ -4,9 +4,11 @@ import {Role} from '../models/index.js'
 import checkRoleMiddleware from '../middlewares/checkRoleMiddleware.js'
 import { 
 	getAllOrdersValidator,
+	getOrderValidator,
 	getShippingCostValidator,
 	checkoutValidator,
-	orderPaymentEvidenceValidator
+	payValidator,
+	paymentConfirmationValidator,
 } from '../validators/orderValidator.js'
 import checkValidationMiddleware from '../middlewares/checkValidationMiddleware.js'
 import OrderController from '../controllers/OrderController.js'
@@ -16,7 +18,8 @@ import OrderController from '../controllers/OrderController.js'
 const orderRouter = express.Router()
 const orderController = new OrderController()
 
-orderRouter.get('/', 
+orderRouter.get('/',
+	checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]),
 	getAllOrdersValidator,
 	checkValidationMiddleware,
 	orderController.getAllOrders
@@ -33,11 +36,23 @@ orderRouter.post('/',
 	checkValidationMiddleware,
 	orderController.checkout
 )
+orderRouter.get('/:id', 
+	checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]),
+	getOrderValidator,
+	checkValidationMiddleware,
+	orderController.getOrderById
+)
 orderRouter.post('/:id/pay', 
 	checkRoleMiddleware([Role.CUSTOMER]), 
-	orderPaymentEvidenceValidator,
+	payValidator,
 	checkValidationMiddleware,
 	orderController.pay
+)
+orderRouter.post('/:id/payment-confirmation', 
+	checkRoleMiddleware([Role.ADMIN]),
+	paymentConfirmationValidator,
+	checkValidationMiddleware,
+	orderController.paymentConfirmation
 )
 
 

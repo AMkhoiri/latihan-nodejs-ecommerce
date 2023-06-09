@@ -67,7 +67,8 @@ class OrderController extends BaseController {
 
 			const statusList = [
 				Order.PENDING, 
-				Order.PAID, 
+				Order.PAID,
+				Order.PAYMENT_REJECTED, 
 				Order.SENT, 
 				Order.DONE, 
 				Order.FAIL, 
@@ -103,6 +104,32 @@ class OrderController extends BaseController {
 			})
 
 			Response.send(res, 200, "Data Order berhasil ditampilkan", orders)
+		} 
+		catch(error) {
+			Response.serverError(req, res, error)
+		}
+	}
+
+	async getOrderById(req, res) {
+		try {
+			const order = await Order.findByPk(req.params.id, {
+				attributes: ['id', 'userId', 'status', 'totalAmount', 'totalWeight', 'createdAt'],
+				include: [
+					{
+						model: OrderItem,
+						include: [
+							{
+								model: Product,
+								include: [Category, Brand]
+							}
+						]
+					},
+					OrderPaymentEvidence,
+					OrderHistory
+				]
+			})
+
+			Response.send(res, 200, "Data Order berhasil ditampilkan", order)
 		} 
 		catch(error) {
 			Response.serverError(req, res, error)
@@ -232,7 +259,18 @@ class OrderController extends BaseController {
 		      	await fs.mkdir(uploadPath, { recursive: true });
 		    }
 
-		    /* save file */
+		    /* delete (to replace) if already has evidence */
+		    const orderPaymentEvidence = await OrderPaymentEvidence.findOne({
+		    	where: {
+		    		orderId: req.params.id
+		    	}
+		    })
+		    if (orderPaymentEvidence) {
+		    	await fs.unlink(orderPaymentEvidence.path)
+				await orderPaymentEvidence.destroy()
+		    }
+
+		    /* save evidence file */
 			for (let file of req.files) {
 
 				let name = file.originalname
@@ -271,6 +309,48 @@ class OrderController extends BaseController {
 			await transaction.commit()
 
 			Response.send(res, 200, "Pembayaran berhasil", null)
+		} 
+		catch (error) {
+			await transaction.rollback()
+
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
+		}
+	}
+
+	async paymentConfirmation(req, res) {
+		const transaction = await sequelize.transaction() 
+
+		try {
+			const newStatus = req.body.confirmationType == Order.REJECT_PAYMENT ? Order.PAYMENT_REJECTED : Order.SENT
+			const note = newStatus == Order.PAYMENT_REJECTED ? req.body.note : null
+
+			await Order.update({
+				status: newStatus,
+				note: note
+			}, {
+				where: {
+					id: req.params.id
+				},
+				transaction
+			})
+
+			await OrderHistory.record(req.params.id, newStatus, req.userData.id, transaction)
+
+			await transaction.commit()
+
+			let txt = ""
+			if (newStatus == Order.PAYMENT_REJECTED) {
+				txt = "Pembayaran ditolak"
+			} else if (newStatus == Order.SENT) {
+				txt = "Pembayaran diterima"
+			}
+
+			Response.send(res, 200, txt, null)
 		} 
 		catch (error) {
 			await transaction.rollback()
