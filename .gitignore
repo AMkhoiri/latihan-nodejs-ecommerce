@@ -1,0 +1,8 @@
+
+# File yang diabaikan
+.env
+
+# Direktori yang diabaikan
+node_modules/
+logs/
+storage/
