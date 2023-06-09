@@ -1,8 +1,8 @@
-import {param, body} from 'express-validator'
+import {param, query, body} from 'express-validator'
 import {Role, Category, Brand, Product, ProductImage} from '../models/index.js'
 
 
-/*params validator*/
+
 
 const checkProductIdValidator = [
 	param('id')
@@ -26,7 +26,45 @@ const checkProductImageIdValidator = [
 		})
 ]
 
-/*body validator*/
+const getAllProductsValidator = [
+	query('categoryId')
+		.optional()
+		.isInt().withMessage('Filter Kategori harus berupa angka').bail()
+		.custom(async(value) => {
+			const category = await Category.findByPk(value)
+			if (!category) throw new Error('Data Kategori tidak ditemukan')
+			return true
+		}),
+	query('brandId')
+		.optional()
+		.isInt().withMessage('Filter Brand harus berupa angka').bail()
+		.custom(async(value) => {
+			const brand = await Brand.findByPk(value)
+			if (!brand) throw new Error('Data Brand tidak ditemukan')
+			return true
+		}),
+	query('minPrice')
+		.optional()
+		.isNumeric().withMessage('Filter Minimal Harga harus berupa angka')
+    	.isFloat({ min: 0 }).withMessage('Filter Minimal Harga harus lebih besar dari 0'),
+    query('maxPrice')
+		.optional()
+		.isNumeric().withMessage('Filter Maksimal Harga harus berupa angka')
+    	.isFloat({ min: 0 }).withMessage('Filter Maksimal Harga harus lebih besar dari 0').bail()
+    	.custom(async(value, {req}) => {
+    		if (req.query.minPrice) {
+    			if (parseFloat(value) < parseFloat(req.query.minPrice)) throw new Error('Filter Maksimal Harga tidak boleh kurang dari Minimal Harga')
+    		}
+    		return true
+    	}),
+    query('orderBy')
+    	.optional()
+    	.custom(async(value) => {
+    		const allowedValues = [Product.HIGHER_PRICE, Product.LOWER_PRICE]
+    		if (!allowedValues.includes(value)) throw new Error('Query untuk pengurutan Product salah')
+    		return true
+    	})
+]
 
 const createProductValidator = [
 	body('categoryId')
@@ -90,7 +128,7 @@ const priceAdjustmentProductValidator = [
     	.custom(async(value, { req }) => {
     		const productToUpdate = await Product.findByPk(req.params.id)
     		if (parseFloat(value) == parseFloat(productToUpdate.price)) throw new Error(`Harga harus berbeda dari yang sekarang: ${productToUpdate.price}`)
-    			return true
+    		return true
     	})
 ]
 
@@ -137,6 +175,7 @@ const productFileValidator = [
 export {
 	checkProductIdValidator,
 	checkProductImageIdValidator,
+	getAllProductsValidator,
 	createProductValidator,
 	updateProductValidator,
 	stockAdjustmentProductValidator,

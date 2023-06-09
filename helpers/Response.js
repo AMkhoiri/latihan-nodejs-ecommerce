@@ -31,7 +31,7 @@ class Response {
             route: req.originalUrl,
             method: req.method,
             contentType: req.header('content-type'),
-            body: JSON.stringify(req.body),
+            // body: JSON.stringify(req.body),
           },
           user: {
             id: req.userData.id,

@@ -5,6 +5,7 @@ import checkRoleMiddleware from '../middlewares/checkRoleMiddleware.js'
 import {
 	checkProductIdValidator,
 	checkProductImageIdValidator,
+	getAllProductsValidator,
 	createProductValidator,
 	updateProductValidator,
 	stockAdjustmentProductValidator,
@@ -21,6 +22,8 @@ const productController = new ProductController();
 
 productRouter.get('/', 
 	checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), 
+	getAllProductsValidator,
+	checkValidationMiddleware,
 	productController.getAllProducts
 )
 productRouter.get('/:id', 

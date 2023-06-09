@@ -31,7 +31,7 @@ const getAllOrdersValidator = [
 		.optional()
 		.custom((value) => {
 			const allowedValues = [Order.PENDING, Order.PAID, Order.SENT, Order.DONE, Order.FAIL, Order.CANCELED]
-			if (!allowedValues.includes(value)) throw new Error('Status Order salah')
+			if (!allowedValues.includes(value)) throw new Error('Filter Status Order salah')
 			return true
 		}),
 ]
