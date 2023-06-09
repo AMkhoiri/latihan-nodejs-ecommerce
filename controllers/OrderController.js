@@ -121,10 +121,15 @@ class OrderController extends BaseController {
 							{
 								model: Product,
 								include: [Category, Brand]
+							},
+							{
+								model: DiscountItem,
+								include: [Discount]
 							}
 						]
 					},
 					OrderPaymentEvidence,
+					OrderShipping,
 					OrderHistory
 				]
 			})
@@ -157,7 +162,7 @@ class OrderController extends BaseController {
 					include: [Product]
 				})
 
-				/* cek is this product has discount today */
+				/* check is this product has discount today */
 				const discountItem = await DiscountItem.findOne({
 					where: {
 						productId: cartItem.productId
@@ -166,7 +171,8 @@ class OrderController extends BaseController {
 						model: Discount,
 						where: {
 							startDate: { [Op.lte]: today },
-							endDate: { [Op.gte]: today }
+							endDate: { [Op.gte]: today },
+							isActive: true
 						}
 					}
 				})
