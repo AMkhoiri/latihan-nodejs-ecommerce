@@ -116,6 +116,7 @@ const payValidator = [
 		.custom(async (value, { req }) => {
 			const order = await Order.findByPk(value)
 			if (!order || order.userId !== req.userData.id) throw new Error('Data Order tidak ditemukan')
+			if (order.status !== Order.PENDING && order.status !== Order.PAYMENT_REJECTED) throw new Error('Order tidak tidak membutuhkan Pembayaran')
 			return true
 		}),
 	body('files')
@@ -162,6 +163,7 @@ const paymentConfirmationValidator = [
 		.custom(async (value, { req }) => {
 			const order = await Order.findByPk(value)
 			if (!order) throw new Error('Data Order tidak ditemukan')
+			if (order.status !== Order.PAID) throw new Error('Order tidak tidak membutuhkan konfirmasi Pembayaran')
 			return true
 		}),
 	body('confirmationType')
@@ -179,6 +181,30 @@ const paymentConfirmationValidator = [
 		})
 ]
 
+const receiptConfirmationValidator = [
+	param('id')
+		.notEmpty().withMessage('Parameter ID Order wajib diisi').bail()
+		.isInt({ min: 0 }).withMessage('Parameter ID Order harus berupa angka').bail()
+		.custom(async (value, { req }) => {
+			const order = await Order.findByPk(value)
+			if (!order || order.userId !== req.userData.id) throw new Error('Data Order tidak ditemukan')
+			if (order.status !== Order.SENT) throw new Error('Order tidak tidak membutuhkan konfirmasi Penerimaan')
+			return true
+		}),
+]
+
+const cancelValidator = [
+	param('id')
+		.notEmpty().withMessage('Parameter ID Order wajib diisi').bail()
+		.isInt({ min: 0 }).withMessage('Parameter ID Order harus berupa angka').bail()
+		.custom(async (value, { req }) => {
+			const order = await Order.findByPk(value)
+			if (!order || order.userId !== req.userData.id) throw new Error('Data Order tidak ditemukan')
+			if (order.status !== Order.PENDING) throw new Error('Order yang telah dibayar tidak dapat dibatalkan')
+			return true
+		}),
+]
+
 
 
 export {
@@ -188,4 +214,6 @@ export {
 	checkoutValidator,
 	payValidator,
 	paymentConfirmationValidator,
+	receiptConfirmationValidator,
+	cancelValidator
 }

@@ -9,6 +9,8 @@ import {
 	checkoutValidator,
 	payValidator,
 	paymentConfirmationValidator,
+	receiptConfirmationValidator,
+	cancelValidator
 } from '../validators/orderValidator.js'
 import checkValidationMiddleware from '../middlewares/checkValidationMiddleware.js'
 import OrderController from '../controllers/OrderController.js'
@@ -42,6 +44,12 @@ orderRouter.get('/:id',
 	checkValidationMiddleware,
 	orderController.getOrderById
 )
+orderRouter.post('/:id/cancel', 
+	checkRoleMiddleware([Role.CUSTOMER]),
+	cancelValidator,
+	checkValidationMiddleware,
+	orderController.cancel
+)
 orderRouter.post('/:id/pay', 
 	checkRoleMiddleware([Role.CUSTOMER]), 
 	payValidator,
@@ -53,6 +61,12 @@ orderRouter.post('/:id/payment-confirmation',
 	paymentConfirmationValidator,
 	checkValidationMiddleware,
 	orderController.paymentConfirmation
+)
+orderRouter.post('/:id/receipt-confirmation', 
+	checkRoleMiddleware([Role.CUSTOMER]),
+	receiptConfirmationValidator,
+	checkValidationMiddleware,
+	orderController.receiptConfirmation
 )
 
 

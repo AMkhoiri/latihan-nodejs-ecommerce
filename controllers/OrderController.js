@@ -246,6 +246,37 @@ class OrderController extends BaseController {
 		}
 	}
 
+	async cancel(req, res) {
+		const transaction = await sequelize.transaction() 
+
+		try {
+			await Order.update({
+				status: Order.CANCELED
+			}, {
+				where: {
+					id: req.params.id
+				},
+				transaction
+			})
+
+			await OrderHistory.record(req.params.id, Order.CANCELED, req.userData.id, transaction)
+
+			await transaction.commit()
+
+			Response.send(res, 200, "Order dibatalkan", null)
+		} 
+		catch (error) {
+			await transaction.rollback()
+
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
+		}
+	}
+
 	async pay(req, res) {
 		const transaction = await sequelize.transaction() 
 
@@ -351,6 +382,37 @@ class OrderController extends BaseController {
 			}
 
 			Response.send(res, 200, txt, null)
+		} 
+		catch (error) {
+			await transaction.rollback()
+
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
+		}
+	}
+
+	async receiptConfirmation(req, res) {
+		const transaction = await sequelize.transaction() 
+
+		try {
+			await Order.update({
+				status: Order.DONE
+			}, {
+				where: {
+					id: req.params.id
+				},
+				transaction
+			})
+
+			await OrderHistory.record(req.params.id, Order.DONE, req.userData.id, transaction)
+
+			await transaction.commit()
+
+			Response.send(res, 200, "Order selesai", null)
 		} 
 		catch (error) {
 			await transaction.rollback()
