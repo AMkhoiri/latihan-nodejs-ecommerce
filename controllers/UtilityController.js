@@ -2,7 +2,7 @@ import {Sequelize} from 'sequelize'
 import path from "path"
 import { fileURLToPath } from 'url'
 
-import {Role, User, ProductImage} from '../models/index.js'
+import {Role, User, ProductImage, OrderPaymentEvidence} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
@@ -15,6 +15,16 @@ class UtilityController extends BaseController {
 		try {
 			if (req.params.type == "productImage") {
 				const image = await ProductImage.findByPk(req.params.id)
+
+			    if (!image) {
+			     	Response.send(res, 404, "Data Gambar tidak ditemukan", null)
+			    }
+			    else{
+			    	res.type(image.mimetype).sendFile(__dirname + '/' + image.path)
+			    }
+			}
+			else if (req.params.type == "orderPaymentEvidence") {
+				const image = await OrderPaymentEvidence.findByPk(req.params.id)
 
 			    if (!image) {
 			     	Response.send(res, 404, "Data Gambar tidak ditemukan", null)

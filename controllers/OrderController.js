@@ -1,9 +1,11 @@
 import {Sequelize, Op} from 'sequelize'
 import dotenv from 'dotenv'
 dotenv.config()
+import path from 'path'
+import fs from 'fs/promises'
 
 import {sequelize} from '../models/index.js' /*untuk db transaction*/
-import {Role, User, Category, Brand, Product, ProductImage, ProductHistory, Discount, DiscountItem, CartItem, Order, OrderItem, OrderShipping, OrderHistory} from '../models/index.js'
+import {Role, User, Category, Brand, Product, ProductImage, ProductHistory, Discount, DiscountItem, CartItem, Order, OrderItem, OrderShipping, OrderHistory, OrderPaymentEvidence} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
@@ -205,6 +207,71 @@ class OrderController extends BaseController {
 
 			Response.send(res, 200, "Berhasil checkout Product", null)
 		}
+		catch (error) {
+			await transaction.rollback()
+
+			if (error instanceof Sequelize.ValidationError) {
+			    Response.validationError(res, error.errors)
+		    }
+		    else {
+		      	Response.serverError(req, res, error)
+		    }
+		}
+	}
+
+	async pay(req, res) {
+		const transaction = await sequelize.transaction() 
+
+		try {
+			const uploadPath = `storage/orderPaymenEvidences/${req.params.id}`
+
+			/*check is directory exists*/
+		    try {
+		      	await fs.access(uploadPath);
+		    } catch (error) {
+		      	await fs.mkdir(uploadPath, { recursive: true });
+		    }
+
+		    /* save file */
+			for (let file of req.files) {
+
+				let name = file.originalname
+				let extension = path.extname(name)
+				let filePath = path.join(uploadPath, `${Date.now()}${extension}`)
+				let size = file.size
+				let mimetype = file.mimetype
+
+				await fs.writeFile(filePath, file.buffer)
+
+				await OrderPaymentEvidence.create({
+					orderId: req.params.id,
+					name,
+					path: filePath,
+					extension,
+					size,
+					mimetype
+				}, {
+					transaction
+				})
+			}
+
+			/* update order status */
+			await Order.update({
+				status: Order.PAID
+			}, {
+				where: {
+					id: req.params.id
+				},
+				transaction
+			})
+
+			/* record history */
+			await OrderHistory.record(req.params.id, Order.PAID, req.userData.id, transaction)
+
+			await transaction.commit()
+
+			Response.send(res, 200, "Pembayaran berhasil", null)
+		} 
 		catch (error) {
 			await transaction.rollback()
 

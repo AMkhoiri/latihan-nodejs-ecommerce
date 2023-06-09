@@ -17,7 +17,7 @@ export default (sequelize, DataTypes) => {
     }
 
     static async record(orderId, historyType, userId, transaction) {
-      const option = {}
+      let option = {}
       if (transaction) {
         option = {transaction}
       }

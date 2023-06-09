@@ -84,6 +84,7 @@ import OrderModel from './Order.js';
 import OrderItemModel from './OrderItem.js';
 import OrderShippingModel from './OrderShipping.js';
 import OrderHistoryModel from './OrderHistory.js';
+import OrderPaymentEvidenceModel from './OrderPaymentEvidence.js';
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes);
@@ -100,6 +101,7 @@ const Order = OrderModel(sequelize, Sequelize.DataTypes);
 const OrderItem = OrderItemModel(sequelize, Sequelize.DataTypes);
 const OrderShipping = OrderShippingModel(sequelize, Sequelize.DataTypes);
 const OrderHistory = OrderHistoryModel(sequelize, Sequelize.DataTypes);
+const OrderPaymentEvidence = OrderPaymentEvidenceModel(sequelize, Sequelize.DataTypes);
 
 /* Definisi relasi antar model */
 Role.associate({ User });
@@ -116,6 +118,7 @@ Order.associate({ User, OrderItem, OrderShipping, OrderHistory });
 OrderItem.associate({ Order, Product, DiscountItem });
 OrderShipping.associate({ Order });
 OrderHistory.associate({ Order });
+OrderPaymentEvidence.associate({ Order });
 
 export {
 	sequelize,  /* digunakan untuk database transaction*/
@@ -132,5 +135,6 @@ export {
 	Order,
 	OrderItem,
 	OrderShipping,
-	OrderHistory
+	OrderHistory,
+	OrderPaymentEvidence
 };
