@@ -38,6 +38,9 @@ This project utilizes an external service from RajaOngkir for the shipping featu
 - Database Management Tools like Navicat, DBeaver
 - and more
 
+### API DOCS:
+https://api.postman.com/collections/8203641-0b9e21dc-6bea-4bfb-9c25-798c819e44ae?access_key=PMAT-01H2HG8KK2Q5TBJRK3R803341S
+
 ## Important Notes:
 
 1. This project implements the use of ES modules in almost all parts of the application. However, for the migration part, CommonJS is used. Therefore, when running the migration, you need to change the module type in the `package.json` file to "commonjs". Once the migration is complete, you can change it back to "module" for normal application usage.
