@@ -27,7 +27,8 @@ class CartController extends BaseController {
 									model: Discount,
 									where: {
 										startDate: { [Op.lte]: today },
-										endDate: { [Op.gte]: today }
+										endDate: { [Op.gte]: today },
+										isActive: true
 									},
 								},
 							}
@@ -41,11 +42,11 @@ class CartController extends BaseController {
 
 			const formattedCartItems = cartItems.map((cartItem) => {
 				const isReadyProduct = cartItem.Product.isActive
-			    const isReadyStock = cartItem.Product.stock >= cartItem.quantity
+			    const isSufficientStock = cartItem.Product.stock >= cartItem.quantity
 			    return {
 			      	...cartItem.toJSON(),
 			      	isReadyProduct,
-			      	isReadyStock,
+			      	isSufficientStock,
 			    }
 			})
 
