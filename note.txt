@@ -24,7 +24,7 @@ catatan  proses development
 
 -- pada fitur upload file, untuk parsing form-data, disini menggunakan third party middleware (multer), namun untuk menyimpan file nya tetap memakai modul fs. namun sebenarnya bisa saja langsung memanfaatkan multer, tanpa memakai modul fs. 
 
---untuk fitur pembayaran, saat ini baru sekedar update paymentDate
+--untuk fitur pembayaran, saat ini masih dengan metode upload bukti
 
 -- untuk fitur pengiriman barang, kita memanfaatkan API external dari rajaongkir. ini mencakup pemakaian data provinsi, kecamatan, kurir, dan cek cost pengiriman.
 -- existing karena keterbatasan fitur, setelah order dibuat dan data pengirimannya terisi, maka dibuat seolah-olah barang yang dikirimkan tersebut sudah langsung diterima oleh pelanggan, 
