@@ -39,7 +39,7 @@ This project utilizes an external service from RajaOngkir for the shipping featu
 - and more
 
 ### API DOCS:
-https://api.postman.com/collections/8203641-0b9e21dc-6bea-4bfb-9c25-798c819e44ae?access_key=PMAT-01H2HG8KK2Q5TBJRK3R803341S
+for API Documentation please contact me
 
 ## Important Notes:
 
