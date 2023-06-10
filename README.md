@@ -3,7 +3,7 @@
 ## Project Description:
 This project is an API designed to facilitate the process of selling goods in a business. The API provides basic features commonly found in similar applications, such as product management, user management, discount capabilities, shopping carts, ordering, payment, shipping, and more. The goal of this project/API is to be implemented in web or mobile applications.
 
-As this is my first project developed using Node.js technology, I am aware that it has limitations and potential for further development. Some potential future developments include additional features like notifications, product recommendations, more complex product filtering, chat, integration with payment gateways, and a product review system. Throughout the development process, I strive to create a modular folder structure and codebase, making it easier for future development.
+As this is my first project developed using Node.js technology, I am aware that it has limitations and potential for further development. Some potential future developments include additional features like notifications, product recommendations, more complex product filtering, Admin Dashboard & Report, Chat, integration with payment gateways, and a product review system. Throughout the development process, I strive to create a modular folder structure and codebase, making it easier for future development.
 
 ## Packages and Technologies:
 The following is a list of packages, frameworks, programming languages, and technologies used in this project:
