@@ -7,7 +7,7 @@ const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 app.get("/landing-page", (req, res) => {
-  	res.setHeader('Content-Type', 'text/html').sendFile('./landing-page.html', {root: __dirname})
+  	res.sendFile('./landing-page.html', {root: __dirname})
 })
 
 
