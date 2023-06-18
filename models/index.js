@@ -62,12 +62,8 @@ const configPath = path.resolve(__dirname, '..', 'config', 'config.json');
 const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const config = configData[env];
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+let sequelize = new Sequelize(config.database, config.username, config.password, config);
+
 
 /* Import definisi model (manual) */
 import RoleModel from './Role.js';
