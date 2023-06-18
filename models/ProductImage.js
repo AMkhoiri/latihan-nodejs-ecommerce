@@ -2,7 +2,7 @@
 
 import {Model} from 'sequelize'
 
-import Utility from '../helpers/utility.js'
+import Utility from '../helpers/Utility.js'
 
 export default (sequelize, DataTypes) => {
   class ProductImage extends Model {
