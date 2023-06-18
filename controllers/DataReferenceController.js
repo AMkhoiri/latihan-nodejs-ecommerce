@@ -6,7 +6,7 @@ import {Role, User, Category, Brand, Product, OrderShipping} from '../models/ind
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
-import Utility from '../helpers/utility.js'
+import Utility from '../helpers/Utility.js'
 
 class DataReferenceController extends BaseController {
 
