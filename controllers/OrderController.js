@@ -9,7 +9,7 @@ import {Role, User, Category, Brand, Product, ProductImage, ProductHistory, Disc
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
-import Utility from '../helpers/utility.js'
+import Utility from '../helpers/Utility.js'
 
 class OrderController extends BaseController {
 
