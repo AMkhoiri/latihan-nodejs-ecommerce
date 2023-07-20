@@ -1,10 +1,11 @@
 {
   "name": "latihan-nodejs-ecommerce",
   "version": "1.0.0",
-  "description": "first my nodeJs project\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b\u001b[C\u001b[C\u001b[C\u001b\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C frist \u001b[C\u001b[C\u001b: my first nodeJs Project\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[p",
+  "description": "my first nodeJs project\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b\u001b[C\u001b[C\u001b[C\u001b\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C frist \u001b[C\u001b[C\u001b: my first nodeJs Project\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[p",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare-module": "node -e \"const fs = require('fs'); const packageJson = require('./package.json'); packageJson.type = 'module'; fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2));\""
   },
   "author": "Ahmad Miftahul Khoiri",
   "license": "ISC",

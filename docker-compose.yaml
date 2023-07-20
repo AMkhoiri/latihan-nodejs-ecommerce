@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  ecommerce-data:
+    container_name: ecommerce-data
+    image: postgres:12.8
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+  ecommerce-api:
+    build: .
+    container_name: ecommerce-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - ecommerce-data
+
+volumes:
+  postgresdata:
