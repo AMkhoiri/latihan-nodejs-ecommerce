@@ -4,6 +4,7 @@
 
 # Direktori yang diabaikan
 node_modules/
+node_modules_windows/
 logs/
 storage/
 config/config.json
