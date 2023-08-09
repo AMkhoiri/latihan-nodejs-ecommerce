@@ -5,7 +5,7 @@ import path from 'path'
 import fs from 'fs/promises'
 
 import {sequelize} from '../models/index.js' /*untuk db transaction*/
-import {Role, User, Category, Brand, Product, ProductImage, ProductHistory, Discount, DiscountItem, CartItem, Order, OrderItem, OrderShipping, OrderHistory, OrderPaymentEvidence} from '../models/index.js'
+import {Role, Category, Brand, Product, Discount, DiscountItem, CartItem, Order, OrderItem, OrderShipping, OrderHistory, OrderPaymentEvidence} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'

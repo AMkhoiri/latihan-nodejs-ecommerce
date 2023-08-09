@@ -1,8 +1,7 @@
-import {Sequelize} from 'sequelize'	
 import path from "path"
 import { fileURLToPath } from 'url'
 
-import {Role, User, ProductImage, OrderPaymentEvidence} from '../models/index.js'
+import {ProductImage, OrderPaymentEvidence} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'

@@ -1,5 +1,4 @@
 import {Sequelize, Op} from 'sequelize'
-import {validationResult} from 'express-validator'
 
 import {Category} from '../models/index.js'
 import BaseController from './BaseController.js'

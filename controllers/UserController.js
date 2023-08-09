@@ -1,6 +1,5 @@
 import {Sequelize, Op} from 'sequelize'
 import bcrypt from 'bcrypt'
-import {validationResult} from 'express-validator'
 
 import {Role, User} from '../models/index.js'
 import BaseController from './BaseController.js'

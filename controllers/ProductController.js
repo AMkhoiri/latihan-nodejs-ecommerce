@@ -1,5 +1,4 @@
 import {Sequelize, Op} from 'sequelize'
-import {validationResult} from 'express-validator'
 import path from 'path'
 import fs from 'fs/promises'
 

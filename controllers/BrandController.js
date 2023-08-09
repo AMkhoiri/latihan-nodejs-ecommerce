@@ -1,5 +1,4 @@
 import {Sequelize, Op} from 'sequelize'
-import {validationResult} from 'express-validator'
 
 import {Brand} from '../models/index.js'
 import BaseController from './BaseController.js'

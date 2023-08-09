@@ -1,5 +1,4 @@
 import {Sequelize, Op} from 'sequelize'
-import {validationResult} from 'express-validator'
 
 import {sequelize} from '../models/index.js' /*untuk db transaction*/
 import {Product, Discount, DiscountItem} from '../models/index.js'
