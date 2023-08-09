@@ -46,75 +46,71 @@
 
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
-import Sequelize from 'sequelize';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-
-const configPath = path.resolve(__dirname, '..', 'config', 'config.json');
-const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-const config = configData[env];
-
-let sequelize = new Sequelize(config.database, config.username, config.password, config);
-
+import fs from 'fs'
+import Sequelize from 'sequelize'
+import { join } from 'path'
 
 /* Import definisi model (manual) */
-import RoleModel from './Role.js';
-import UserModel from './User.js';
-import CategoryModel from './Category.js';
-import BrandModel from './Brand.js';
-import ProductModel from './Product.js';
-import ProductImageModel from './ProductImage.js';
-import ProductHistoryModel from './ProductHistory.js';
-import DiscountModel from './Discount.js';
-import DiscountItemModel from './DiscountItem.js';
-import CartItemModel from './CartItem.js';
-import OrderModel from './Order.js';
-import OrderItemModel from './OrderItem.js';
-import OrderShippingModel from './OrderShipping.js';
-import OrderHistoryModel from './OrderHistory.js';
-import OrderPaymentEvidenceModel from './OrderPaymentEvidence.js';
+import RoleModel from './Role.js'
+import UserModel from './User.js'
+import CategoryModel from './Category.js'
+import BrandModel from './Brand.js'
+import ProductModel from './Product.js'
+import ProductImageModel from './ProductImage.js'
+import ProductHistoryModel from './ProductHistory.js'
+import DiscountModel from './Discount.js'
+import DiscountItemModel from './DiscountItem.js'
+import CartItemModel from './CartItem.js'
+import OrderModel from './Order.js'
+import OrderItemModel from './OrderItem.js'
+import OrderShippingModel from './OrderShipping.js'
+import OrderHistoryModel from './OrderHistory.js'
+import OrderPaymentEvidenceModel from './OrderPaymentEvidence.js'
+
+
+const env = process.env.NODE_ENV || 'development'
+
+/* Get DB config */
+const rootPath = process.cwd()
+const configPath = join(rootPath, 'config', 'config.json')
+const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'))
+const config = configData[env]
+
+let sequelize = new Sequelize(config.database, config.username, config.password, config)
 
 /* Inisialisasi model */
-const Role = RoleModel(sequelize, Sequelize.DataTypes);
-const User = UserModel(sequelize, Sequelize.DataTypes);
-const Category = CategoryModel(sequelize, Sequelize.DataTypes);
-const Brand = BrandModel(sequelize, Sequelize.DataTypes);
-const Product = ProductModel(sequelize, Sequelize.DataTypes);
-const ProductImage = ProductImageModel(sequelize, Sequelize.DataTypes);
-const ProductHistory = ProductHistoryModel(sequelize, Sequelize.DataTypes);
-const Discount = DiscountModel(sequelize, Sequelize.DataTypes);
-const DiscountItem = DiscountItemModel(sequelize, Sequelize.DataTypes);
-const CartItem = CartItemModel(sequelize, Sequelize.DataTypes);
-const Order = OrderModel(sequelize, Sequelize.DataTypes);
-const OrderItem = OrderItemModel(sequelize, Sequelize.DataTypes);
-const OrderShipping = OrderShippingModel(sequelize, Sequelize.DataTypes);
-const OrderHistory = OrderHistoryModel(sequelize, Sequelize.DataTypes);
-const OrderPaymentEvidence = OrderPaymentEvidenceModel(sequelize, Sequelize.DataTypes);
+const Role = RoleModel(sequelize, Sequelize.DataTypes)
+const User = UserModel(sequelize, Sequelize.DataTypes)
+const Category = CategoryModel(sequelize, Sequelize.DataTypes)
+const Brand = BrandModel(sequelize, Sequelize.DataTypes)
+const Product = ProductModel(sequelize, Sequelize.DataTypes)
+const ProductImage = ProductImageModel(sequelize, Sequelize.DataTypes)
+const ProductHistory = ProductHistoryModel(sequelize, Sequelize.DataTypes)
+const Discount = DiscountModel(sequelize, Sequelize.DataTypes)
+const DiscountItem = DiscountItemModel(sequelize, Sequelize.DataTypes)
+const CartItem = CartItemModel(sequelize, Sequelize.DataTypes)
+const Order = OrderModel(sequelize, Sequelize.DataTypes)
+const OrderItem = OrderItemModel(sequelize, Sequelize.DataTypes)
+const OrderShipping = OrderShippingModel(sequelize, Sequelize.DataTypes)
+const OrderHistory = OrderHistoryModel(sequelize, Sequelize.DataTypes)
+const OrderPaymentEvidence = OrderPaymentEvidenceModel(sequelize, Sequelize.DataTypes)
 
 /* Definisi relasi antar model */
-Role.associate({ User });
-User.associate({ Role });
-Category.associate({ Product });
-Brand.associate({ Product });
-Product.associate({ Category, Brand, ProductImage, ProductHistory, DiscountItem });
-ProductImage.associate({ Product });
-ProductHistory.associate({ Product, User });
-Discount.associate({ DiscountItem });
-DiscountItem.associate({ Product, Discount, OrderItem });
-CartItem.associate({ User, Product });
-Order.associate({ User, OrderItem, OrderShipping, OrderPaymentEvidence, OrderHistory });
-OrderItem.associate({ Order, Product, DiscountItem });
-OrderShipping.associate({ Order });
-OrderHistory.associate({ Order });
-OrderPaymentEvidence.associate({ Order });
+Role.associate({ User })
+User.associate({ Role })
+Category.associate({ Product })
+Brand.associate({ Product })
+Product.associate({ Category, Brand, ProductImage, ProductHistory, DiscountItem })
+ProductImage.associate({ Product })
+ProductHistory.associate({ Product, User })
+Discount.associate({ DiscountItem })
+DiscountItem.associate({ Product, Discount, OrderItem })
+CartItem.associate({ User, Product })
+Order.associate({ User, OrderItem, OrderShipping, OrderPaymentEvidence, OrderHistory })
+OrderItem.associate({ Order, Product, DiscountItem })
+OrderShipping.associate({ Order })
+OrderHistory.associate({ Order })
+OrderPaymentEvidence.associate({ Order })
 
 export {
 	sequelize,  /* digunakan untuk database transaction*/
@@ -133,4 +129,4 @@ export {
 	OrderShipping,
 	OrderHistory,
 	OrderPaymentEvidence
-};
+}
