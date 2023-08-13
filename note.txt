@@ -55,3 +55,14 @@ taraaa...
 
 * kenapa harus diulang berkali-kali? 
   karena file migration & seeder masih menerapkan commonjs, sedangkan keseluruhan aplikasi berjalan dengan ES Module
+
+
+
+  PENGUJIAN MENGGUNAKAN JEST & SUPERTEST
+
+  -- kode pengujian dibangun dengan kombinasi Jest (sebagai kerangkanya) dan Supertest (sebagai alat untuk simulasi hit http endpoint)
+  -- Exsisting Jest hanya support commonJs, jadi disini kita menggunakan Babel (Babel-jest) untuk transform kode ESM ke CommonJS
+  -- Implementasi Babel-jest perlu dilakukan beberapa konfigurasi, seperti di package.json, babel-config.json, dll
+  -- ada beberapa syntax ESM yang tidak bisa ditransform oleh Babel-jest, seperti "import.meta.url". jadi perlu disesuaikan dahulu
+  -- secara default, Babel tidak men-transorm file di node_modules, jadi ada beberapa dependency yang perlu di downgrade agar tetap bisa menyesuaikan ke kode commonJs
+

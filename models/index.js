@@ -76,7 +76,7 @@ const configPath = join(rootPath, 'config', 'config.json')
 const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'))
 const config = configData[env]
 
-let sequelize = new Sequelize(config.database, config.username, config.password, config)
+const sequelize = new Sequelize(config.database, config.username, config.password, config)
 
 /* Inisialisasi model */
 const Role = RoleModel(sequelize, Sequelize.DataTypes)

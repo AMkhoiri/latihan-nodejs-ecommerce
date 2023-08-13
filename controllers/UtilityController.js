@@ -1,12 +1,11 @@
 import path from "path"
-import { fileURLToPath } from 'url'
 
 import {ProductImage, OrderPaymentEvidence} from '../models/index.js'
 import BaseController from './BaseController.js'
 
 import Response from '../helpers/Response.js'
 
-const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..') /*mendapatkan path 1 tingkat diatas ini*/
+const __dirname = path.join(process.cwd(), '..')
 
 class UtilityController extends BaseController {
 

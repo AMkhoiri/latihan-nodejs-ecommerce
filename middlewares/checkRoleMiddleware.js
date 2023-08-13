@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 
 function checkRoleMiddleware(roleIds) {
 	return function(req, res, next) {

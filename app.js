@@ -56,8 +56,6 @@ app.use('/utility', checkRoleMiddleware([Role.ADMIN, Role.CUSTOMER]), utilityRou
 
 
 
-
-
 app.use("/", (req, res) => {
     res.status(404).json({
     	code: 404,
@@ -67,3 +65,7 @@ app.use("/", (req, res) => {
 })
 
 app.listen(3000, () => console.log('Server started on port 3000'))
+
+
+/* using for supertest */
+export default app

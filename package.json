@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest",
+    "force-test": "jest --forceExit --detectOpenHandles  --watchAll --maxWorkers=1",
     "prepare-module": "node -e \"const fs = require('fs'); const packageJson = require('./package.json'); packageJson.type = 'module'; fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2));\""
   },
   "author": "Ahmad Miftahul Khoiri",
@@ -28,12 +29,15 @@
   "type": "module",
   "jest": {
     "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest"]
+      "^.+\\.(js|jsx|ts|tsx)$": [
+        "babel-jest"
+      ]
     }
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.10",
     "babel-jest": "^29.6.2",
-    "jest": "^29.6.2"
+    "jest": "^29.6.2",
+    "supertest": "^6.3.3"
   }
 }
