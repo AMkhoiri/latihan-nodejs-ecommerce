@@ -4,8 +4,7 @@
   "description": "my first nodeJs project\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b\u001b[C\u001b[C\u001b[C\u001b\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C frist \u001b[C\u001b[C\u001b: my first nodeJs Project\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[p",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
-    "force-test": "jest --forceExit --detectOpenHandles  --watchAll --maxWorkers=1",
+    "test": "jest --runInBand --force-exit",
     "prepare-module": "node -e \"const fs = require('fs'); const packageJson = require('./package.json'); packageJson.type = 'module'; fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2));\""
   },
   "author": "Ahmad Miftahul Khoiri",
