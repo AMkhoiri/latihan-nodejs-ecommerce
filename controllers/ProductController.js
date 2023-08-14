@@ -19,19 +19,32 @@ class ProductController extends BaseController {
 			const today = new Date()
 
 			let includeQuery = [
-				Category,
-				Brand,
 				{
-					model: ProductImage,
-					// required: true
+					model: Category,
+					where: {
+						isActive: true
+					}
+				},
+				{
+					model: Brand,
+					where: {
+						isActive: true
+					}
+				},
+				{
+					model: ProductImage
 				},
 				{
 					model: DiscountItem,
 					include: {
 						model: Discount,
 						where: {
-							startDate: { [Op.lte]: today },
-							endDate: { [Op.gte]: today }
+							startDate: { 
+								[Op.lte]: today 
+							},
+							endDate: { 
+								[Op.gte]: today 
+							}
 						},
 					},
 				}

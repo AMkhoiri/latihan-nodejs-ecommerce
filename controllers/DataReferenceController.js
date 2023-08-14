@@ -141,31 +141,47 @@ class DataReferenceController extends BaseController {
 
 	async product(req, res) {
 		try {
-			const {page, perPage, search} = req.query
-			const limit = perPage ? perPage : 10
-			const offset = page ? (page - 1) * limit : 0
-
-			let whereQuery = {}
-			whereQuery['isActive'] = {
-	          	[Op.eq]: true
-	        }
-
-			if (search) {
-				whereQuery['name'] = {
-		          	[Op.iLike]: `%${search}%`
-		        }
+			const { page, perPage, search } = req.query
+			const limit = perPage ? parseInt(perPage) : 10
+			const offset = page ? (parseInt(page) - 1) * limit : 0
+	
+			const whereQuery = {
+				isActive: true
 			}
-
+	
+			const includeQuery = [
+				{
+					model: Category,
+					where: {
+						isActive: true
+					},
+					attributes: []
+				},
+				{
+					model: Brand,
+					where: {
+						isActive: true
+					},
+					attributes: []
+				}
+			]
+	
+			if (search) {
+				whereQuery.name = {
+					[Op.iLike]: `%${search}%`
+				};
+			}
+	
 			const products = await Product.findAll({
 				attributes: ['id', 'name'],
 				where: whereQuery,
+				include: includeQuery,
 				limit,
 				offset
 			})
-
+	
 			Response.send(res, 200, "Data Product berhasil ditampilkan", products)
-		}
-		catch(error) {
+		} catch (error) {
 			Response.serverError(req, res, error)
 		}
 	}
